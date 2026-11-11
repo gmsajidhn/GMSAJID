@@ -1,0 +1,3676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Study with Sajid's Study Tracker</title>
+<link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
+<style>
+:root {
+  --bg: #ebdccb;
+  --card: #ffffff;
+  --text: #2c2420;
+  --muted: #786c65;
+  --primary: #2e27f6;
+  --primary2: #4f46e5;
+  --border: #d8c4b0;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --shadow: 0 4px 15px rgba(60,50,40,.06);
+  --header-bg: #1f1915;
+}
+
+[data-theme="sunset"] {
+  --bg: #2d1b2d;
+  --card: #3b233b;
+  --text: #f3e5f5;
+  --muted: #b39ddb;
+  --primary: #ff2970;
+  --primary2: #f50057;
+  --border: #4a2c4a;
+  --header-bg: #1a001a;
+}
+[data-theme="nature"] {
+  --bg: #1b2e1e;
+  --card: #243c28;
+  --text: #e8f5e9;
+  --muted: #a5d6a7;
+  --primary: #2ed536;
+  --primary2: #1b5e20;
+  --border: #2e4d33;
+  --header-bg: #0f1d11;
+}
+[data-theme="cyber"] {
+
+  --bg: #030706;
+  --card: #0a110e;
+  --text: #00ff66;
+  --muted: #008f4c;
+  --primary: #00ff00;
+  --primary2: #052e16;
+  --border: #00ff66;
+  --header-bg: #010403;
+}
+
+
+
+[data-theme="lavender"] {
+  --bg: #232035;
+  --card: #2d2945;
+  --text: #f1f0ff;
+  --muted: #a59ecc;
+  --primary: #bb2aff;
+  --primary2: #7b2cbf;
+  --border: #3b3558;
+  --header-bg: #151221;
+}
+[data-theme="midnight"] {
+  --bg: #0a0e17;
+  --card: #121824;
+  --text: #e2e8f0;
+  --muted: #64748b;
+  --primary: #186af6;
+  --primary2: #1d4ed8;
+  --border: #1e293b;
+  --header-bg: #030712;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  font-family: 'SolaimanLipi', Arial, sans-serif !important;
+}
+
+body {
+  margin: 0;
+  font-family: 'SolaimanLipi', Arial, sans-serif !important;
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.3s, color 0.3s;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input, select, textarea {
+  font-family: 'SolaimanLipi', Arial, sans-serif !important;
+  font-weight: 700 !important;
+}
+button { cursor: pointer; border: 0; font-weight: 800 !important; }
+
+.app { display: flex; flex-direction: column; min-height: 100vh; }
+
+.sticky-top-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: var(--header-bg);
+}
+
+.header {
+  background: var(--header-bg);
+  color: white;
+  padding: 6px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.time-bar {
+  background: var(--header-bg); 
+  border-top: 1px solid rgba(255,255,255,0.1); 
+  border-bottom: 1px solid var(--border); 
+  padding: 4px 12px; 
+  text-align: center; 
+  font-size: 13px; 
+  font-weight: 700; 
+  color: #fff; 
+  margin: 0;
+}
+
+.logo {
+  font-size: 15px;
+  font-weight: 800 !important;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.anim-6-color {
+  font-weight: 900 !important;
+  font-size: 19px !important;
+  background: linear-gradient(270deg, #ff1493, #FF0000, #0044ff, #ff00ff, #ff4500,  #ff0000, #ff1493);
+  background-size: 500% 500%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: colorAnim 25s ease infinite;
+  -webkit-text-stroke: 0.8px rgba(255, 255, 255, 0.6);
+  text-shadow: 0 0 10px rgba(30, 144, 255, 0.5), 0 0 20px rgba(255, 20, 147, 0.4);
+  paint-order: stroke fill;
+}
+
+.header-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  position: relative;
+}
+.menu-container { position: relative; }
+.menu-toggle-btn {
+  background: rgba(255,255,255,0.1);
+  color: #ffffff;
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800 !important;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: 0.2s;
+}
+.menu-toggle-btn:hover { background: rgba(255,255,255,0.2); }
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 6px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  display: none;
+  flex-direction: column;
+  min-width: 150px;
+  z-index: 1000;
+  overflow: hidden;
+}
+.dropdown-menu.active { display: flex; }
+.dropdown-menu button {
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 800 !important;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+  width: 100%;
+}
+.dropdown-menu button:last-child {
+  border-bottom: none;
+  color: var(--danger);
+}
+.dropdown-menu button:hover { background: var(--bg); }
+
+@keyframes colorAnim {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.avatar-img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border);
+}
+
+.profile-btn-icon {
+  background: rgba(255,255,255,0.1);
+  padding: 2px;
+  border-radius: 50%;
+  font-size: 50px;
+  transition: 0.2s;
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.profile-btn-icon:hover { background: rgba(255,255,255,0.2); }
+
+.nav {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.nav button {
+  padding: 2px 6px;
+  background: transparent;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 800 !important;
+  transition: all 0.2s;
+  background: rgba(255,255,255,0.08);
+  white-space: nowrap;
+}
+.nav button.active, .nav button:hover { background: rgba(255,255,255,0.2); color: white; }
+.nav { position: relative; }
+.nav .nav-search-btn {
+  position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+  width: 30px; height: 26px; padding: 0; font-size: 15px; line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.12); border: 1px solid var(--border); border-radius: 13px;
+}
+
+.anim-3-color {
+  background: linear-gradient(90deg, #ff007f, #00e5ff, #ff007f);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: colorAnim 2s ease infinite;
+  display: inline-block;
+  font-weight: 800 !important;
+}
+
+.anim-2-color {
+  background: linear-gradient(90deg, #ff007f, #00f0ff, #ff007f);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: colorAnim 5s ease infinite;
+  display: inline-block;
+  font-weight: 800 !important;
+}
+
+.anim-red-pink-btn {
+  background: linear-gradient(270deg, #ff0055, #ff69b4, #ff0055);
+  background-size: 300% 300%;
+  animation: redPinkAnim 3s ease infinite;
+  color: white !important;
+  border: none;
+  font-weight: 800 !important;
+}
+
+@keyframes redPinkAnim {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.anim-10-color-footer {
+  text-align: center;
+  font-size: 20px;
+  margin-top: 20px;
+  margin-bottom: 14px;
+  font-weight: 900 !important;
+  letter-spacing: 1.5px;
+  background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #4b0082, #9400d3, #ff1493, #00ff7f, #ff0000);
+  background-size: 500% 500%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: colorAnim 5s ease infinite;
+}
+
+.footer-text-small {
+  text-align: center;
+  font-size: 13px;
+  margin-top: 16px;
+  margin-bottom: 6px;
+  font-weight: 800 !important;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+}
+
+.main { width: 100%; padding: 12px 10px; max-width: 1400px; margin: 0 auto; flex: 1; }
+.top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.top h1 { margin: 0; font-size: 18px; font-weight: 800 !important; }
+.date { color: var(--muted); font-size: 11px; margin-top: 2px; }
+.user {
+  background: var(--card);
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  font-weight: 800 !important;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.grid { 
+  display: grid; 
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 6px; 
+  margin-bottom: 6px; 
+}
+
+.grid .card {
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
+
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; box-shadow: var(--shadow); margin-bottom: 8px; }
+.card h2 { margin: 0 0 8px; font-size: 15px; font-weight: 800 !important; display: flex; justify-content: space-between; align-items: center; }
+.stat {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: auto;
+  padding: 10px 12px;
+}
+.stat .num { font-size: 20px; font-weight: 800 !important; margin: 4px 0 0 0; white-space: nowrap; }
+.clickable-time {
+  cursor: pointer;
+  display: inline-block;
+  padding: 2px 4px;
+  border-radius: 6px;
+  transition: background 0.2s;
+  font-weight: 800 !important;
+}
+.clickable-time:hover { background: var(--bg); }
+.muted { color: var(--muted); font-size: 13px; line-height: 1.4; font-weight: 700 !important; }
+
+.single-line-header {
+  white-space: nowrap !important;
+  font-size: 13px !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 700 !important;
+}
+
+.box-header { display: flex; align-items: center; gap: 8px; }
+.box-header .icon { font-size: 18px; line-height: 1; }
+
+.layout-two { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px; }
+
+.row { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 13px; font-weight: 700 !important; }
+.subject-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 700 !important; }
+.subject-item.pinned {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 10%, var(--bg));
+  border-radius: 6px;
+  padding: 6px;
+  margin-bottom: 4px;
+}
+
+.timer { text-align: center; padding: 6px 8px; max-width: 440px; margin: 0 auto 8px auto; position: relative; }
+.timer h2 { font-size: 17px; margin-bottom: 2px; font-weight: 700 !important; }
+
+.timer .timer-instruction { 
+  font-size: 12px !important; 
+  font-weight: 600 !important; 
+  line-height: 1.3; 
+  margin-bottom: 4px; 
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 2px;
+  border-radius: 4px;
+}
+
+.fullscreen-user-info {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.fullscreen-user-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--text);
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.fullscreen-user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fullscreen-user-name {
+  font-size: 42px;
+  font-weight: 800 !important;
+  color: var(--text);
+  line-height: 1;
+}
+
+.fullscreen-clock-display {
+  display: none;
+  font-size: 38px;
+  font-weight: 800 !important;
+  color: var(--primary);
+  letter-spacing: 1px;
+  margin-bottom: 25px;
+}
+
+.timer select {
+  padding: 4px 8px; 
+  border: 1.5px solid var(--primary); 
+  background: var(--bg); 
+  color: var(--text); 
+  border-radius: 8px; 
+  margin: 2px auto; 
+  font-size: 15px; 
+  font-weight: 800 !important;
+  width: 100%; 
+  max-width: 180px;
+  text-align: center;
+}
+
+.timer.fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100% !important;
+  z-index: 9999 !important;
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+  padding: 20px !important;
+}
+
+.timer.fullscreen .fullscreen-user-info { display: flex !important; }
+.timer.fullscreen .fullscreen-clock-display { display: block !important; }
+.timer.fullscreen h2 { display: none !important; } 
+.timer.fullscreen #timerCardSubtitle { display: none !important; }
+.timer.fullscreen #trackerBoxTotalStudy,
+.timer.fullscreen #screenTimeDisplay,
+.timer.fullscreen span:has-text("Total Study Time:"),
+.timer.fullscreen span:has-text("Total Leisure Screen Time:") {
+  display: none !important;
+}
+
+.timer.fullscreen select {
+  width: 100% !important;
+  max-width: 310px !important;
+  padding: 10px !important;
+  font-size: 20px !important;
+  margin-bottom: 1px !important;
+  font-weight: 800 !important;
+}
+
+.timer.fullscreen #fullscreenToggleBtn {
+  position: absolute;
+  top: 2px;
+  right: 10px;
+  font-size: 14px !important;
+  padding: 6px 12px !important;
+}
+
+.timer .time-btn {
+  font-size: 22px;
+  font-weight: 800 !important;
+  letter-spacing: 1px;
+  margin: 2px auto;
+  background: var(--bg);
+  color: var(--primary);
+  padding: 4px 8px;
+  border-radius: 8px;
+  display: inline-block;
+  border: 1px solid var(--border);
+  user-select: none;
+  min-width: 160px;
+}
+
+.timer.fullscreen .time-btn {
+  font-size: 23px !important;
+  padding: 3px 0px !important;
+  margin: 2px auto 1px auto !important;
+  border-radius: 8px !important;
+  min-width: 250px !important;
+}
+
+.timer-controls {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 2px;
+  width: 100%;
+}
+
+.timer-controls .btn {
+  padding: 6px 0 !important;
+  width: 50% !important;
+  font-size: 13px !important;
+  border-radius: 8px !important;
+  font-weight: 800 !important;
+}
+
+.timer.fullscreen .timer-controls .btn {
+  padding: 6px 16px !important;
+  font-size: 16px !important;
+}
+
+.stopwatch-mini-box {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px !important;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.stopwatch-display {
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  color: var(--primary);
+  letter-spacing: 0.5px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: var(--primary);
+  color: white;
+  font-weight: 800 !important;
+  font-size: 14px;
+  width: 100%;
+  text-align: center;
+  transition: 0.2s;
+}
+.btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn.sm { padding: 4px 8px; font-size: 11px; border-radius: 6px; width: auto; font-weight: 800 !important; }
+
+.btn-start-styled {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  border: 1.5px solid var(--border) !important;
+  font-weight: 800 !important;
+}
+
+
+.btn-reset-styled {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  font-weight: 800 !important;
+}
+
+.btn.danger { background: #fee2e2; color: var(--danger); }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+
+.card.todo-card {
+  resize: vertical;
+  overflow: auto;
+  min-height: 75px;
+  max-height: 250px;
+}
+.input-box { display: flex; gap: 6px; margin-bottom: 6px; }
+.input-box input[type=text], .input-box input[type=time] {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700 !important;
+}
+
+#todoList {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: none; 
+  overflow-y: visible;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+}
+#todoList.grid-view {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 6px !important;
+  align-content: start;
+}
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--card);
+  font-size: 13px;
+  font-weight: 700 !important;
+  width: 100%;
+}
+.todo-item.done span { text-decoration: line-through; color: var(--muted); }
+
+.todo-card { margin-bottom: 8px !important; }
+
+.namaz-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+}
+.namaz-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 2px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  font-size: 12px;
+  font-weight: 700 !important;
+  text-align: center;
+}
+.namaz-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 700 !important; }
+th { color: var(--muted); font-size: 12px; font-weight: 800 !important; }
+
+.page { display: none; }
+.page.active { display: block; }
+
+.hero {
+  background: linear-gradient(135deg,var(--header-bg),var(--primary));
+  color: white;
+  border-radius: 12px;
+  padding: 14px 12px;
+  margin-top: 2px;
+  margin-bottom: 10px;
+}
+.hero h2 { font-size: 18px; margin: 0 0 4px; font-weight: 800 !important; }
+.hero p { opacity: .85; font-size: 13px; margin: 0 0 10px; line-height: 1.4; }
+
+.blue-deepgreen-anim-btn {
+  background: var(--primary);
+  color: white !important;
+  border: none;
+  font-weight: 800 !important;
+}
+
+.anim-10-color {
+  background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #4b0082, #9400d3, #ff1493, #00ff7f);
+  background-size: 500% 500%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: colorAnim 4s ease infinite;
+  font-weight: 900 !important;
+  display: inline-block;
+  font-size: 28px;
+  letter-spacing: 1px;
+}
+
+.anim-10-color-btn {
+  background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #4b0082, #9400d3, #ff1493, #00ff7f);
+  background-size: 500% 500%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: colorAnim 5s ease infinite;
+  font-weight: 800 !important;
+}
+
+.login-action-btn {
+  background: linear-gradient(270deg, #0055ff, #003366, #008040, #00ff80, #0055ff);
+  background-size: 400% 400%;
+  animation: blueGreenAnim 4s ease infinite;
+  color: white !important;
+  border: none;
+  font-weight: 800 !important;
+}
+
+@keyframes blueGreenAnim {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.anim-other-btn {
+  background: linear-gradient(270deg, #ff007f, #7928ca, #ff007f);
+  background-size: 200% 200%;
+  animation: blueGreenAnim 4s ease infinite;
+  color: white !important;
+  border: none;
+  font-weight: 800 !important;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 15000 !important;
+}
+.modal-overlay.active { display: flex; }
+
+#customInputModal, #customAlertModal {
+  z-index: 30000 !important;
+}
+
+.modal {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 380px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.modal-header h3 { margin: 0; font-size: 15px; font-weight: 800 !important; }
+.close-btn { background: transparent; font-size: 16px; color: var(--text); font-weight: 800 !important; }
+
+/* ===== অ্যালার্ম সেট: চাকা-টাইপ সময় বাছাই + Ring/Snooze duration (Edit alarm স্ক্রিনের মতো) ===== */
+.cfgRow { display:flex; justify-content:space-between; align-items:center; padding:13px 6px; border-bottom:1px solid var(--border); font-size:14px; cursor:pointer; }
+.cfgRow b { font-size:13px; color:var(--muted); font-weight:600; }
+.radioDot { width:22px; height:22px; border-radius:50%; border:2px solid var(--muted); box-sizing:border-box; }
+.radioDot.on { border:6px solid var(--primary); }
+.wheelHead { display:flex; justify-content:space-between; align-items:center; padding:12px 14px; font-size:18px; }
+.wheelWrap { position:relative; display:flex; justify-content:center; gap:10px; margin:30px auto 0; width:min(92%,420px); height:240px; }
+.wheelBand { position:absolute; left:0; right:0; top:96px; height:48px; border-radius:14px; background:rgba(128,128,128,.2); pointer-events:none; }
+.wheelCol { position:relative; z-index:1; flex:1; height:240px; overflow-y:scroll; scroll-snap-type:y mandatory; scrollbar-width:none; padding:96px 0; box-sizing:border-box; }
+.wheelCol::-webkit-scrollbar { display:none; }
+.wheelItem { height:48px; line-height:48px; text-align:center; font-size:22px; scroll-snap-align:center; opacity:.4; }
+.wheelItem.on { opacity:1; color:var(--primary); font-size:28px; font-weight:700; }
+.cfgRange { width:100%; accent-color:var(--primary); margin:6px 0 2px; }
+.cfgTicks { display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:14px; }
+
+.theme-list { display: flex; flex-direction: column; gap: 6px; }
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+  background: var(--bg);
+}
+.theme-option.selected { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
+.theme-option span { font-size: 13px; font-weight: 800 !important; }
+
+.profile-upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+}
+.profile-preview {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary);
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  overflow: hidden;
+}
+.profile-preview img { width: 100%; height: 100%; object-fit: cover; }
+
+.theme-select-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 8px 0;
+  background: var(--bg);
+}
+
+.uppercase-input { text-transform: uppercase; }
+
+#authScreen {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  overflow-y: auto;
+}
+.auth-container {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-align: center;
+}
+.auth-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 12px;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+.auth-form-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+.auth-form-card h3 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  text-align: center;
+  font-weight: 800 !important;
+}
+.auth-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700 !important;
+}
+
+.social-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  margin-bottom: 6px;
+}
+.social-item.pinned {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 10%, var(--bg));
+}
+
+.self-report-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.full-section-box {
+  min-height: 450px;
+  height: calc(100vh - 150px);
+  display: flex;
+  flex-direction: column;
+}
+
+.full-section-box .table-scroll-container {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.day-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  background: var(--bg);
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+.day-selector label {
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  background: var(--card);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+p, span, b, button, header, nav, div, label, input, select, option, td, th, h1, h2, h3, h4 {
+  -webkit-font-smoothing: antialiased;
+}
+
+@media(max-width:600px){
+  .grid { grid-template-columns: repeat(2,1fr); gap: 6px; }
+  .top h1 { font-size: 17px; }
+  .stat .num { font-size: 17px; }
+  .self-report-grid .num { font-size: 14px; }
+  .full-section-box {
+    min-height: 450px;
+    height: calc(100vh - 140px);
+  }
+}
+</style>
+</head>
+<body>
+
+<div id="authScreen">
+  <div class="auth-container">
+    <div>
+      <span class="anim-10-color">SAJID'S STUDY TRACKER</span>
+    </div>
+
+    <div class="auth-box">
+      <div style="font-size: 16px; margin-bottom: 6px; font-weight: 800;">
+        <span class="anim-10-color-btn" style="font-size:16px; font-weight:800;">Assalamu Alaikum!</span>
+      </div>
+
+      <div style="font-size: 13px; margin-bottom: 8px; font-weight: 800; line-height: 1.3;">
+        <span class="anim-3-color">Welcome to Smart Study & Tracking Platform </span>
+      </div>
+
+      <div style="font-size: 12px; font-weight: 600; line-height: 1.4;">
+        <span class="anim-2-color">তোমার পড়ার সময় ট্র্যাক করো, লক্ষ্য ঠিক করো এবং প্রতিদিন একটু একটু করে এগিয়ে যাও।</span>
+      </div>
+    </div>
+
+    <div id="loginFormCard" class="auth-form-card">
+      <h3 id="authCardTitle"><span class="anim-2-color" style="font-size: 16px;">সাজিদ অ্যাপে প্রবেশ করো </span></h3>
+      <div id="authInputWrapper" style="display:none;">
+        <input type="text" id="loginUsername" class="auth-input uppercase-input" oninput="this.value = this.value.toUpperCase()" placeholder="আপনার নাম লেখো">
+      </div>
+      <button class="btn login-action-btn" id="authMainBtn" onclick="handleAuthButtonClick()"> সাজিদ  লগইন করো </button>
+      <button class="btn secondary" id="authBackBtn" onclick="resetAuthScreenToInitial()" style="display:none;">← পিছনে যান</button>
+    </div>
+  </div>
+</div>
+
+<div class="app" id="mainAppContent" style="display:none;">
+
+<div class="sticky-top-wrapper">
+  <header class="header" id="appHeader">
+    <div class="header-top-row">
+      <div class="logo" onclick="showPage('Dashboard', null)">
+        <button class="profile-btn-icon" id="headerAvatar" onclick="event.stopPropagation(); showPage('profile',this)" title="Profile"> </button>
+        <span class="anim-6-color" id="headerTitleText">SAJID'S STUDY TRACKER</span>
+      </div>
+      <div class="menu-container">
+        <button class="menu-toggle-btn" onclick="toggleHeaderMenu(event)">Menu</button>
+        <div class="dropdown-menu" id="headerDropdownMenu">
+          <button onclick="window.open('https://gemini.google.com', '_blank')">Gemini</button>
+          <button onclick="window.open('https://chatgpt.com/', '_blank')">Chatgpt</button>
+          <button onclick="window.open('https://www.google.com/', '_blank')">Google</button>
+          <button onclick="window.open('https://daricomma.com/', '_blank')">Daricoma</button>
+          <button onclick="window.open('https://chorcha.net/', '_blank')">Chorcha</button>
+         
+          <button onclick="window.open('https://hsc-all-department-syllabus-traker.edgeone.dev/', '_blank')">Syllabus</button>
+          <button onclick="window.open('https://sbgcp.edu.bd/বিজ্ঞপ্তি/', '_blank')">Collage Web</button>
+           <button onclick="window.open('https://web.telegram.org/k/', '_blank')">Telegram</button>
+        </div>
+      </div>
+    </div>
+    <nav class="nav">
+      <button onclick="showPage('Dashboard',this)"><span class="anim-3-color">Dashboard</span></button>
+      <button onclick="showPage('tracker',this)"><span class="anim-3-color">Self Tracker</span></button>
+      <button onclick="showPage('routine',this)"><span class="anim-3-color">Routine</span></button>
+      <button class="nav-search-btn" onclick="openBrowserHome()" title="Browser" aria-label="Browser">🔍</button>
+    </nav>
+    
+  </header>
+
+  <div class="time-bar">
+    <span id="today"></span>
+  </div>
+</div>
+
+<main class="main">
+<div class="top">
+  <div>
+    <h1 id="pageTitle" style="font-weight: 800;">Today's Dashboard</h1>
+  </div>
+  <div style="display: flex; align-items: center; gap: 8px;">
+    <button class="btn sm anim-other-btn" id="topSocialMediaBtn" onclick="openMediaModal()" style="font-weight: 800; padding: 6px 10px; display: none;">Links</button>
+    <div class="user" id="userHeaderBadge" onclick="showPage('profile', null)">
+      <span id="userAvatarDisplay"> </span>
+      <span id="userName" style="font-weight: 800;"></span>
+    </div>
+  </div>
+</div>
+
+<section id="Dashboard" class="page">
+ <div class="hero">
+   <h2 id="welcomeText">স্বাগতম, STUDENT 👋</h2>
+   <p id="heroInstructionText">সাজিদ লক্ষ্যহীন যাত্রা মানুষকে ক্লান্ত করে, কিন্তু একটি সুনির্দিষ্ট লক্ষ্য তোমাকে এনে দেবে কাজের গতি। অহেতুক বাহানা আর অলসতাকে এখনই পেছনে ফেলে দাও। এখনই "সেলফ ট্র্যাকার " বাটনে চাপ দাও এবং পড়া শুরু করো! সাজিদ তোমার জন্য শুভকামনা রইল।
+   </p>
+   <button class="btn blue-deepgreen-anim-btn" onclick="showPage('tracker',document.querySelectorAll('.nav button')[1])"> সেলফ ট্র্যাকার </button>
+ </div>
+ 
+ <div class="grid">
+  <div class="card stat">
+    <div class="box-header">
+      <span class="icon">📖</span>
+      <span class="muted">আজ পড়েছি</span>
+    </div>
+    <div class="num" id="todayHours">0 Hours 0 Mins</div>
+  </div>
+  
+  <div class="card stat">
+    <div class="box-header">
+      <span class="icon">🙋</span>
+      <span class="muted">উপস্থিতি</span>
+    </div>
+    <div class="num" id="streak">1 দিন</div>
+  </div>
+
+  <div class="card stat">
+    <div class="box-header">
+      <span class="icon">🕌</span>
+      <span class="muted single-line-header">নামাজ পড়েছি</span>
+    </div>
+    <div class="num" id="namazDashboardCount">5 / 0</div>
+  </div>
+
+  <div class="card stat">
+    <div class="box-header">
+      <span class="icon">📝</span>
+      <span class="muted">কাজ করেছি</span>
+    </div>
+    <div class="num" id="doneCount">0 / 0</div>
+  </div>
+ </div>
+
+ <div class="layout-two">
+  <div class="card stat">
+    <div class="box-header">
+      <span class="icon">🎯</span>
+      <span class="muted">পড়ার লক্ষ্য</span>
+    </div>
+    <div class="num clickable-time" id="goalDisplay" onclick="setCustomGoal()" title="সাজিদ সময় পরিবর্তন করতে ট্যাপ করো ">0 Hours 0 Mins</div>
+  </div>
+
+  <div class="card stat">
+    <div class="box-header">
+      <span class="icon">⛳</span>    
+      <span class="muted">লক্ষ্য পূরণ</span>
+      </div>
+    <div class="row" style="font-size:16px;"><span>Progress</span><b id="goalPercent" style="font-size:18px; font-weight: 800;">0%</b></div>
+  </div>
+ </div>
+
+<div style="margin-top: 40px; margin-bottom: 40px; display: flex; justify-content: center;">
+   <button class="btn sm blue-deepgreen-anim-btn" onclick="openBrowserHome()" style="width: auto; display: inline-block; padding: 6px 22px; font-size: 12px; margin-top: 20px; margin-bottom: 14px; font-weight: 600; border-radius: 10px; box-shadow: var(--shadow);">Browser</button>
+ </div>
+
+ <div class="anim-10-color-footer">Developed by SAJID </div>
+</section>
+
+<section id="tracker" class="page">
+ <div class="card timer" id="mainTimerCard">
+    <button class="btn sm secondary" id="fullscreenToggleBtn" onclick="toggleTimerFullscreen()" title="Full Screen" style="padding: 4px 8px; font-size: 14px; position: absolute; top: 10px; right: 10px; font-weight: 800;">⛶</button>
+    
+    <div class="fullscreen-user-info" id="fullscreenUserInfo">
+      <div class="fullscreen-user-avatar" id="fullscreenUserAvatar"> </div>
+      <div class="fullscreen-user-name" id="fullscreenUserName">STUDENT</div>
+    </div>
+
+    <div class="fullscreen-clock-display" id="fullscreenRealtimeClock">00:00:00 AM</div>
+    <h2 id="timerCardHeaderTitle" style="font-weight: 800;">⏱️ Timer</h2>
+    <p class="timer-instruction" id="timerCardSubtitle"> </p>
+        <select id="subjectSelect" onchange="handleSubjectChange()"></select><br>
+<div style="border-top: 2px solid var(--border); margin-top: 4px; padding-top: 4px; display: flex; flex-direction: column; gap: 4px; text-align: left; width: 100%;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 13px; font-weight: 800; color: var(--text);">Total Study Time:</span>
+        <span id="trackerBoxTotalStudy" style="font-size: 13px; font-weight: 800; color: var(--primary);">0s</span>
+      </div>
+    <div class="stopwatch-mini-box" style="flex-direction: column; align-items: stretch; gap: 4px; margin-top: 4px; background: var(--card); border: 1px solid var(--border);">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div class="muted" style="font-size: 12px; font-weight: 800; color: var(--muted);">Study Timer</div>
+      </div>
+      <div class="time-btn" id="studyTime" onclick="setCustomMinutes()" title="সাজিদ সময় পরিবর্তন করতে ট্যাপ করো " style="width: 100%; margin: 0; font-size: 22px; text-align: center; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; color: var(--primary);">00:00:00</div>
+      <div class="timer-controls" style="margin-top: 0; display: flex; gap: 4px; width: 100%;">
+        <button class="btn btn-reset-styled" onclick="resetStudy()" style="padding: 6px 10px; font-size: 12px; width: 50%;">Reset</button>
+        <button class="btn btn-start-styled" id="startBtn" onclick="toggleStudy()" style="padding: 6px 10px; font-size: 12px; width: 50%;">Start</button> 
+      </div>
+    </div>
+
+      <div class="stopwatch-mini-box" style="flex-direction: column; align-items: stretch; gap: 4px; margin-top: 0; background: var(--card); border: 1px solid var(--border);">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <div class="muted" style="font-size: 12px; font-weight: 800; color: var(--muted);">Study Time Stopwatch</div>
+        </div>
+        <div class="stopwatch-display" id="todoStopwatchDisplay" style="width: 100%; margin: 0; font-size: 22px; text-align: center; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; color: var(--primary);">00:00:00</div>
+        <div class="timer-controls" style="margin-top: 0; display: flex; gap: 4px; width: 100%;">
+          <button class="btn btn-reset-styled" onclick="resetTodoStopwatch()" style="padding: 6px 10px; font-size: 12px; width: 50%;">Reset</button>
+          <button class="btn btn-start-styled" id="todoStartBtn" onclick="toggleTodoStopwatch()" style="padding: 6px 10px; font-size: 12px; width: 50%;">Start</button>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+        <span style="font-size: 13px; font-weight: 800; color: var(--text);">Total Leisure Screen Time:</span>
+        <span id="screenTimeDisplay" style="font-size: 13px; font-weight: 800; color: var(--primary);">0h 0m 0s</span>
+      </div>
+
+      <div class="stopwatch-mini-box" style="margin-top:2px; padding: 6px 8px;">
+        <div>
+          <div class="muted" style="font-size:11px; font-weight: 800;">Screen Time Stopwatch</div>
+          <div class="stopwatch-display" id="topStopwatchDisplay" style="font-size:18px;">00:00:00</div>
+        </div>
+        <div style="display:flex;gap:4px;">
+          <button class="btn btn-reset-styled" onclick="resetTopStopwatch()" style="padding: 6px 10px; font-size: 12px; width: auto;">Reset</button>
+          <button class="btn btn-start-styled" id="topStartBtn" onclick="toggleTopStopwatch()" style="padding: 6px 10px; font-size: 12px; width: auto;">Start</button>
+        </div>
+      </div>
+    </div>
+ </div>
+
+ <div class="card todo-card">
+    <h2 style="font-weight: 600;">📋 Today's To-do</h2>
+    <div class="input-box">
+      <input id="todoInput" type="text" style="padding:6px 8px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:8px;font-size:12px;resize:vertical;min-height:30px" placeholder="সাজিদ! আজ কী কী করবে ? ">
+      <button class="btn sm blue-deepgreen-anim-btn" onclick="addTodo()">Add</button>
+    </div>
+    <div id="todoList"></div>
+ </div>
+
+ <div class="card">
+    <h2>
+      <span style="font-weight: 800;">🕌 Prayer  </span>
+      <button class="btn sm secondary" onclick="openHistoryModal('namaz')">History</button>
+    </h2>
+    <div class="namaz-grid">
+      <div class="namaz-item">
+        <span>ফজর</span>
+        <input type="checkbox" id="namazFajr" onchange="toggleNamaz('fajr')">
+      </div>
+      <div class="namaz-item">
+        <span>জোহর</span>
+        <input type="checkbox" id="namazDhuhr" onchange="toggleNamaz('dhuhr')">
+      </div>
+      <div class="namaz-item">
+        <span>আসর</span>
+        <input type="checkbox" id="namazAsr" onchange="toggleNamaz('asr')">
+      </div>
+      <div class="namaz-item">
+        <span>মাগরিব</span>
+        <input type="checkbox" id="namazMaghrib" onchange="toggleNamaz('maghrib')">
+      </div>
+      <div class="namaz-item">
+        <span>এশা</span>
+        <input type="checkbox" id="namazIsha" onchange="toggleNamaz('isha')">
+      </div>
+    </div>
+ </div>
+
+<div class="card" style="padding: 10px 12px; margin-bottom: 8px;">
+    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 4px;">
+        <div style="display: flex; align-items: center; gap: 6px; white-space: nowrap;">
+            <span style="font-weight: 800; font-size: 15px;">📱 Leisure Screen Time</span>
+        </div>
+        <button class="btn secondary btn-sm" onclick="openHistoryModal('screen')" style="width: auto !important;border-radius: 6px; padding: 3px 8px; font-size: 11px; flex: unset;">History</button>
+    </div>
+    <div style="font-size: 13px; color: var(--text); font-weight: 800;">
+        Total Leisure Screen Time: <span id="screenTimeDisplay2" style="font-weight: 800; color: var(--primary);">0h 0m 0s</span>
+    </div>
+</div>
+
+ <div class="card">
+    <h2>
+      <span style="font-weight: 800;">📑 Self Report</span>
+      <button class="btn sm secondary" onclick="openHistoryModal('study')">History</button>
+    </h2>
+    
+    <div class="self-report-grid">
+      <div class="card stat" style="box-shadow:none;background:var(--bg);min-height:auto;padding:6px"><div class="muted" style="font-size:10px; font-weight: 800;">Total Study</div><div class="num" id="totalStudy" style="font-size:14px; font-weight: 800;">0s</div></div>
+      <div class="card stat" style="box-shadow:none;background:var(--bg);min-height:auto;padding:6px"><div class="muted" style="font-size:10px; font-weight: 800;">Sessions</div><div class="num" id="sessions" style="font-size:14px; font-weight: 800;">0</div></div>
+      <div class="card stat" style="box-shadow:none;background:var(--bg);min-height:auto;padding:6px"><div class="muted" style="font-size:10px; font-weight: 800;">Average</div><div class="num" id="average" style="font-size:14px; font-weight: 800;">0s</div></div>
+    </div>
+
+    <table>
+      <thead><tr><th style="font-weight: 800;">Subject</th><th style="font-weight: 800;">Time</th></tr></thead>
+      <tbody id="reportTable"></tbody>
+    </table>
+ </div>
+
+ <div class="card">
+    <h2>📚 Subject Management</h2>
+    <p class="muted">সাজিদ তোমার পড়ার বিষয়গুলো যুক্ত করো।</p>
+    <div class="input-box">
+      <input id="subjectInput" type="text" placeholder="সাজিদ নতুন বিষয়ের নাম লেখো...">
+      <button class="btn sm blue-deepgreen-anim-btn" onclick="addSubject()">+ Add</button>
+    </div>
+    <div id="subjectList"></div>
+ </div>
+ <div class="footer-text-small">Developed by SAJID </div>
+</section>
+
+<section id="routine" class="page">
+ <div class="card full-section-box" style="position: relative;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border);">
+      <h2 style="margin: 0; font-size: 15px; font-weight: 800;">🗓️ রুটিন লিস্ট </h2>
+      <div style="display: flex; gap: 6px;">
+        <button class="btn sm secondary" onclick="openRingtoneSettingsModal()" style="font-weight: 800;">🔔   </button>
+        <button class="btn sm anim-red-pink-btn" onclick="openRoutineModal()">+ নতুন রুটিন </button>
+      </div>
+    </div>
+    <div class="table-scroll-container">
+      <table>
+        <thead><tr><th> সময়</th><th>কাজের বিবরণ </th><th>   </th></tr></thead>
+        <tbody id="routineTable"></tbody>
+      </table>
+    </div>
+ </div>
+ <div class="footer-text-small">Developed by SAJID </div>
+</section>
+
+<section id="profile" class="page">
+ <div class="card">
+    <h2 style="font-weight: 800;">  Profile </h2>
+    
+    <div class="profile-upload-container">
+      <div class="profile-preview" id="profilePreview"> </div>
+      <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+      <div style="display:flex;gap:6px">
+        <button class="btn sm blue-deepgreen-anim-btn" onclick="$('photoInput').click()">📁 Choose Image</button>
+        <button class="btn sm danger" onclick="removePhoto()">❌ Remove Photo</button>
+      </div>
+    </div>
+
+    <div class="theme-select-box">
+      <span style="font-size:13px;font-weight:800">🎨 App Theme:</span>
+      <button class="btn sm secondary" onclick="openThemeModal()">Change Theme</button>
+    </div>
+
+    <label style="font-size:12px;color:var(--muted);font-weight:700">সাজিদ তোমার নামটি নিচে লেখো -  </label>
+    <input id="nameInput" type="text" class="uppercase-input" oninput="this.value = this.value.toUpperCase()" style="display:block;width:100%;padding:6px 10px;margin:4px 0 8px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:6px;font-size:13px">
+
+    <label style="font-size:12px;color:var(--muted);font-weight:700">টাইমার বক্সের নোট -</label>
+    <textarea id="timerInstructionInput" style="display:block;width:100%;padding:6px 10px;margin:4px 0 8px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:6px;font-size:13px;resize:vertical;min-height:30px;"></textarea>
+
+    <label style="font-size:12px;color:var(--muted);font-weight:700">হোম পেজের নোট -</label>
+    <textarea id="heroInstructionInput" style="display:block;width:100%;padding:6px 10px;margin:4px 0 8px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:6px;font-size:13px;resize:vertical;min-height:30px;"></textarea>
+
+    <button class="btn blue-deepgreen-anim-btn" onclick="saveProfile()">সেভ কর  </button>
+    <br><br>
+    <button class="btn danger" onclick="handleLogout()">লগ আউট  </button>
+ </div>
+ <div class="footer-text-small">Developed by SAJID </div>
+
+</section>
+</main>
+</div>
+
+<div class="modal-overlay" id="customInputModal">
+  <div class="modal" style="text-align: center; max-width: 320px; background: #ffffff; color: #000000;">
+    <h3 id="customInputTitle" style="margin: 0 0 10px 0; font-size: 15px; color: var(--primary); font-weight: 800;">Sajid's Study Tracker Says</h3>
+    <p id="customInputMessage" style="font-size: 13px; margin-bottom: 10px; line-height: 1.4; color: #000000;"></p>
+    <input type="text" id="customInputField" style="width: 100%; padding: 6px 8px; border: 1px solid #d8c4b0; background: #ffffff; color: #000000; border-radius: 8px; font-size: 13px; margin-bottom: 10px; display: none;">
+    <div style="display: flex; gap: 8px; justify-content: center;">
+      <button class="btn secondary sm" id="customInputCancelBtn" style="padding: 6px 14px; font-size: 12px; background: #d8c4b0; color: #2c2420;" onclick="resolveCustomInput(false)">না থাক  </button>
+      <button class="btn blue-deepgreen-anim-btn sm" id="customInputOkBtn" style="padding: 6px 14px; font-size: 12px;" onclick="resolveCustomInput(true)">ঠিক আছে </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="customAlertModal">
+  <div class="modal" style="text-align: center; max-width: 320px; background: #ffffff; color: #000000;">
+    <div style="font-size: 28px; margin-bottom: 6px;">🔔</div>
+    <h3 style="margin: 0 0 4px 0; font-size: 15px; color: var(--primary); font-weight: 800;">Sajid's Study Tracker Says</h3>
+    <p id="customAlertMessage" style="font-size: 13px; margin-bottom: 12px; line-height: 1.4; color: #000000;"></p>
+    <button class="btn blue-deepgreen-anim-btn" onclick="closeCustomAlert()" style="padding: 6px 14px; font-size: 12px;">ঠিক আছে</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="alarmModal">
+  <div class="modal" style="text-align: center; max-width: 340px;">
+    <div style="font-size: 44px; margin-bottom: 8px; animation: colorAnim 1s infinite;">⏰</div>
+    <h3 style="margin: 0 0 8px 0; font-size: 16px; color: var(--danger);">রুটিন রিমাইন্ডার!</h3>
+    <div id="alarmTaskList" style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; text-align: center; max-height: 180px; overflow-y: auto; padding: 4px;"></div>
+    <button class="btn blue-deepgreen-anim-btn" onclick="stopAlarm()">আবাল বন্ধ হ</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="ringtoneSettingsModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 style="font-weight: 800;">🔔 রিমাইন্ডার রিংটোন </h3>
+      <button class="close-btn" onclick="closeRingtoneSettingsModal()">✕</button>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:10px;">
+      <p style="font-size: 12px; line-height: 1.4; color: var(--muted); margin: 0;">
+         Choose File থেকে ডিফল্ট রিমাইন্ডার রিংটোন সেট করো। রিংটোন একবার সেট করলে সেটা পুনরায় সেট করা লাগে না। রুটিন যোগ করার সময় আলাদা রিংটোন/ভাইব্রেশন না দিলে এটাই কাজ করবে।
+      </p>
+      <input type="file" id="ringtoneInput" accept="audio/*" style="font-size:12px;" onclick="if(window.Android&&Android.pickRingtone){event.preventDefault();Android.pickRingtone('default');}" onchange="handleRingtoneUpload(event)">
+      <label style="font-size:13px;font-weight:700;display:flex;gap:8px;align-items:center;">
+        <input type="checkbox" id="defaultVibrateCheck" onchange="setDefaultVibrate(this.checked)"> 📳 ডিফল্ট ভাইব্রেশন চালু
+      </label>
+      <p style="font-size:11px;line-height:1.4;color:var(--muted);margin:0;">বন্ধ থাকলে ভাইব্রেশন হবে না — শুধু সেই রুটিনে হবে যেখানে ভাইব্রেশন চালু করা আছে।</p>
+      <button class="btn sm" id="nativeStatusBtn" style="display:none;margin-bottom:6px" onclick="(function(){showCustomAlert(Android.status());var e=document.getElementById('customAlertMessage');if(e)e.style.whiteSpace='pre-line';})()">ℹ️ অ্যালার্ম স্ট্যাটাস দেখো</button>
+      <button class="btn sm" id="overlayBtn" style="display:none;margin-bottom:6px" onclick="Android.openOverlaySettings()">🪟 ভাসমান টাইমার পারমিশন দাও</button>
+      <div id="overlayStatusText" style="font-size: 12px; font-weight: 800;"></div>
+      <div id="alarmCfgBox" style="display:none;border-top:1px solid var(--border);padding-top:6px;">
+        <div class="cfgRow" onclick="openRingDur()"><span>Ring duration</span><b id="ringDurVal"></b></div>
+        <div class="cfgRow" onclick="openSnoozeCfg()"><span>Snooze duration</span><b id="snoozeVal"></b></div>
+      </div>
+      <div id="ringtoneStatusText" style="font-size: 12px; font-weight: 800; color: var(--primary);"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="wheelOv" style="z-index:31000 !important;background:var(--bg);align-items:stretch;justify-content:flex-start;">
+  <div style="width:100%;display:flex;flex-direction:column;">
+    <div class="wheelHead"><button class="close-btn" onclick="wheelClose()">✕</button><b>Set time</b><button class="close-btn" onclick="wheelOk()">✓</button></div>
+    <div class="wheelWrap" id="wheelWrap"></div>
+  </div>
+</div>
+<div class="modal-overlay" id="ringDurOv" style="z-index:31000 !important;"><div class="modal" id="ringDurBox"></div></div>
+<div class="modal-overlay" id="snoozeCfgOv" style="z-index:31000 !important;"><div class="modal" id="snoozeCfgBox"></div></div>
+
+<div class="modal-overlay" id="routineModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>🗓️ সাজিদ রুটিন অ্যাড করো </h3>
+      <button class="close-btn" onclick="closeRoutineModal()">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;">
+      <label style="font-size:11px; font-weight:600;">সাজিদ সময় নির্বাচন করো:</label>
+      <input id="routineTime" type="time" style="padding:6px 8px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:8px;font-size:13px;width:100%">
+      
+      <label style="font-size:11px; font-weight:600;">সাজিদ কাজের নাম লেখো:</label>
+      <input id="routineTask" type="text" placeholder="কাজের নাম বা পড়ার বিষয়..." style="padding:6px 8px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:8px;font-size:13px;width:100%">
+      
+      <label style="font-size:11px; font-weight:600;">সাজিদ দিন / বার নির্বাচন করো:</label>
+      <div class="day-selector" id="routineDaysContainer">
+        <label><input type="checkbox" onchange="toggleSelectAllDays(this, 'routineDaysContainer')"> <b>সব দিন</b></label>
+        <label><input type="checkbox" value="6" class="day-check"> শনি</label>
+        <label><input type="checkbox" value="0" class="day-check"> রবি</label>
+        <label><input type="checkbox" value="1" class="day-check"> সোম</label>
+        <label><input type="checkbox" value="2" class="day-check"> মঙ্গল</label>
+        <label><input type="checkbox" value="3" class="day-check"> বুধ</label>
+        <label><input type="checkbox" value="4" class="day-check"> বৃহ</label>
+        <label><input type="checkbox" value="5" class="day-check"> শুক্র</label>
+      </div>
+
+
+      <label style="font-size:11px; font-weight:600;">🔔 রিংটোন ও ভাইব্রেশন (ঐচ্ছিক):</label>
+      <div style="display:flex;flex-direction:column;gap:6px;padding:8px;border:1px solid var(--border);border-radius:8px;">
+        <div id="addRingRow" style="display:none;gap:6px;align-items:center;flex-wrap:wrap;">
+          <button type="button" class="btn sm secondary" onclick="pickRoutineRing('add')">🎵 রিংটোন বাছো</button>
+          <button type="button" class="btn sm secondary" id="addRingClear" style="display:none" onclick="clearRoutineRing('add')">✕ ডিফল্ট</button>
+        </div>
+        <div id="addRingName" style="font-size:11px;color:var(--muted);">ডিফল্ট রিংটোন বাজবে</div>
+        <label style="font-size:12px;font-weight:700;display:flex;gap:8px;align-items:center;">📳 ভাইব্রেশন: <select id="addVibrate" style="padding:4px 6px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:6px;font-size:12px;"><option value="">ডিফল্ট অনুযায়ী</option><option value="on">চালু</option><option value="off">বন্ধ</option></select></label>
+      </div>
+      <button class="btn blue-deepgreen-anim-btn" style="margin-top:6px;" onclick="addRoutine()">+ রুটিন যোগ করো </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="editRoutineModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>✏️সাজিদ  রুটিন পরিবর্তন করো </h3>
+      <button class="close-btn" onclick="closeEditRoutineModal()">✕</button>
+    </div>
+    <input type="hidden" id="editRoutineIndex">
+    <label style="font-size:11px; font-weight:600;">সময়:</label>
+    <input id="editRoutineTime" type="time" style="width:100%; padding:6px; margin:4px 0 8px; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text); font-size:13px;">
+    
+    <label style="font-size:11px; font-weight:600;"> শিরোনাম/কাজের বিবরণ:</label>
+    <input id="editRoutineTask" type="text" style="width:100%; padding:6px; margin:4px 0 6px; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text); font-size:13px;">
+
+    <label style="font-size:11px; font-weight:600;">সাজিদ দিন / বার নির্বাচন করো:</label>
+    <div class="day-selector" id="editRoutineDaysContainer">
+      <label><input type="checkbox" onchange="toggleSelectAllDays(this, 'editRoutineDaysContainer')"> <b>সব দিন</b></label>
+      <label><input type="checkbox" value="6" class="day-check"> শনি</label>
+      <label><input type="checkbox" value="0" class="day-check"> রবি</label>
+      <label><input type="checkbox" value="1" class="day-check"> সোম</label>
+      <label><input type="checkbox" value="2" class="day-check"> মঙ্গল</label>
+      <label><input type="checkbox" value="3" class="day-check"> বুধ</label>
+      <label><input type="checkbox" value="4" class="day-check"> বৃহ</label>
+      <label><input type="checkbox" value="5" class="day-check"> শুক্র</label>
+    </div>
+
+
+      <label style="font-size:11px; font-weight:600;">🔔 রিংটোন ও ভাইব্রেশন (ঐচ্ছিক):</label>
+      <div style="display:flex;flex-direction:column;gap:6px;padding:8px;border:1px solid var(--border);border-radius:8px;">
+        <div id="editRingRow" style="display:none;gap:6px;align-items:center;flex-wrap:wrap;">
+          <button type="button" class="btn sm secondary" onclick="pickRoutineRing('edit')">🎵 রিংটোন বাছো</button>
+          <button type="button" class="btn sm secondary" id="editRingClear" style="display:none" onclick="clearRoutineRing('edit')">✕ ডিফল্ট</button>
+        </div>
+        <div id="editRingName" style="font-size:11px;color:var(--muted);">ডিফল্ট রিংটোন বাজবে</div>
+        <label style="font-size:12px;font-weight:700;display:flex;gap:8px;align-items:center;">📳 ভাইব্রেশন: <select id="editVibrate" style="padding:4px 6px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:6px;font-size:12px;"><option value="">ডিফল্ট অনুযায়ী</option><option value="on">চালু</option><option value="off">বন্ধ</option></select></label>
+      </div>
+    <button class="btn blue-deepgreen-anim-btn" style="margin-top:6px;" onclick="saveEditedRoutine()">Save Changes</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="subRoutineModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="subRoutineModalTitle" style="font-weight: 800;">🗓️ Sub-routine</h3>
+      <button class="close-btn" onclick="closeSubRoutineModal()">✕</button>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:10px; background:var(--bg); padding:8px; border-radius:8px; border:1px solid var(--border);">
+      <h4 style="margin:0; font-size:12px;">সাজিদ নতুন সাব-রুটিন যোগ করো </h4>
+      <input id="subRoutineTime" type="time" style="padding:5px; border:1px solid var(--border); border-radius:6px; background:var(--card); color:var(--text); font-size:12px;">
+      
+      <input id="subRoutineTask" type="text" placeholder="যেমন: ১ গ্লাস পানি" style="padding:5px; border:1px solid var(--border); border-radius:6px; background:var(--card); color:var(--text); font-size:12px;">
+
+      <label style="font-size:10px; font-weight:600;">সাজিদ দিন / বার নির্বাচন করো:</label>
+      <div class="day-selector" id="subRoutineDaysContainer">
+        <label><input type="checkbox" onchange="toggleSelectAllDays(this, 'subRoutineDaysContainer')"> <b>সব দিন</b></label>
+        <label><input type="checkbox" value="6" class="day-check"> শনি</label>
+        <label><input type="checkbox" value="0" class="day-check"> রবি</label>
+        <label><input type="checkbox" value="1" class="day-check"> সোম</label>
+        <label><input type="checkbox" value="2" class="day-check"> মঙ্গল</label>
+        <label><input type="checkbox" value="3" class="day-check"> বুধ</label>
+        <label><input type="checkbox" value="4" class="day-check"> বৃহ</label>
+        <label><input type="checkbox" value="5" class="day-check"> শুক্র</label>
+      </div>
+
+      <label style="font-size:10px; font-weight:600;">🔔 রিংটোন ও ভাইব্রেশন (ঐচ্ছিক):</label>
+      <div style="display:flex;flex-direction:column;gap:5px;padding:6px;border:1px solid var(--border);border-radius:8px;">
+        <div id="subRingRow" style="display:none;gap:6px;align-items:center;flex-wrap:wrap;">
+          <button type="button" class="btn sm secondary" onclick="pickRoutineRing('sub')">🎵 রিংটোন বাছো</button>
+          <button type="button" class="btn sm secondary" id="subRingClear" style="display:none" onclick="clearRoutineRing('sub')">✕ ডিফল্ট</button>
+        </div>
+        <div id="subRingName" style="font-size:10px;color:var(--muted);">মূল রুটিনের রিংটোন বাজবে</div>
+        <label style="font-size:11px;font-weight:700;display:flex;gap:8px;align-items:center;">📳 ভাইব্রেশন: <select id="subVibrate" style="padding:3px 5px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:6px;font-size:11px;"><option value="">মূল রুটিন অনুযায়ী</option><option value="on">চালু</option><option value="off">বন্ধ</option></select></label>
+      </div>
+      <button class="btn sm blue-deepgreen-anim-btn" id="subRoutineSubmitBtn" onclick="addSubRoutine()" style="font-size:11px; padding:4px;">+ Add Sub-item</button>
+    </div>
+
+    <table>
+      <thead><tr><th>সময়</th><th>বিবরণ</th><th>অ্যাকশন</th></tr></thead>
+      <tbody id="subRoutineTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal-overlay" id="themeModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>🎨 থিম নির্বাচন</h3>
+      <button class="close-btn" onclick="closeThemeModal()">✕</button>
+    </div>
+    <div class="theme-list">
+      <div class="theme-option" onclick="applyTheme('light')"><span style="font-weight: 800;"> Light</span></div>
+      <div class="theme-option" onclick="applyTheme('midnight')"><span style="font-weight: 800;"> Premium Dark</span></div>
+      <div class="theme-option" onclick="applyTheme('sunset')"><span style="font-weight: 800;"> Soft Rose</span></div>
+      <div class="theme-option" onclick="applyTheme('nature')"><span style="font-weight: 800;"> Nature Green</span></div>
+      <div class="theme-option" onclick="applyTheme('cyber')"><span style="font-weight: 800;"> Cyber</span></div>
+      
+      <div class="theme-option" onclick="applyTheme('lavender')"><span style="font-weight: 800;"></span> Lavender Dream</span></div>
+           
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="mediaModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="mediaModalTitle">Links </h3>
+      <button class="close-btn" onclick="closeMediaModal()">✕</button>
+    </div>
+    
+    <div id="socialAddBox" style="display:none; background:var(--bg); padding:8px; border-radius:8px; border:1px solid var(--border); margin-bottom:10px;">
+      <h4 id="socialFormTitle" style="margin:0 0 6px 0; font-size:13px; font-weight: 800;">লিংক যোগ কর  </h4>
+      <input type="text" id="socialNameInput" placeholder="Name-(Ex: Sajid's Web )" style="width:100%; padding:6px; margin-bottom:5px; border:1px solid var(--border); border-radius:6px; background:var(--card); color:var(--text); font-size:12px;">
+      <input type="text" id="socialLinkInput" placeholder="Link-(Ex: https://...)" style="width:100%; padding:6px; margin-bottom:6px; border:1px solid var(--border); border-radius:6px; background:var(--card); color:var(--text); font-size:12px;">
+      <div style="display:flex; gap:20px;">
+        <button class="btn sm blue-deepgreen-anim-btn" onclick="saveSocialMedia()">লিংক যোগ কর  </button>
+        <button class="btn sm secondary" onclick="cancelSocialForm()">না থাক </button>
+      </div>
+    </div>
+
+    <button class="btn sm blue-deepgreen-anim-btn" id="openAddSocialBtn" onclick="showAddSocialForm()" style="width:100%; margin-bottom:10px; font-size:12px; font-weight: 800;">+ Add New Link</button>
+
+    <div id="socialList"></div>
+
+    <div id="inlineSubSocialSection" style="display:none; margin-top:12px; border-top:1px solid var(--border); padding-top:10px;">
+      <h4 id="inlineSubSocialTitle" style="margin:0 0 6px 0; font-size:13px; color:var(--primary); font-weight: 800;">Subtitles</h4>
+      <div style="display:flex; flex-direction:column; gap:5px; margin-bottom:6px; background:var(--bg); padding:6px; border-radius:6px; border:1px solid var(--border);">
+        <input id="inlineSubName" type="text" placeholder="সাবটাইটেল নাম (যেমন: Group)" style="padding:5px; border:1px solid var(--border); border-radius:6px; background:var(--card); color:var(--text); font-size:11px;">
+        <input id="inlineSubLink" type="text" placeholder="লিংক (https://...)" style="padding:5px; border:1px solid var(--border); border-radius:6px; background:var(--card); color:var(--text); font-size:11px;">
+        <button class="btn sm blue-deepgreen-anim-btn" onclick="addInlineSubSocial()" style="font-size:11px; padding:3px;">+ Add Subtitle</button>
+      </div>
+      <div id="inlineSubSocialList" style="display:flex; flex-direction:column; gap:4px; max-height:130px; overflow-y:auto;"></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-overlay" id="historyModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="historyModalTitle" style="font-weight: 800;">History</h3>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <button class="btn sm secondary" onclick="confirmReset10DaysHistory()" title="Reset History" style="padding: 2px 6px; font-size: 13px; font-weight: 800;">↻</button>
+        <button class="close-btn" onclick="closeHistoryModal()">✕</button>
+      </div>
+    </div>
+    <table>
+      <thead><tr><th style="font-weight: 800;">Date</th><th id="historyTableColName" style="font-weight: 800;">Amount</th></tr></thead>
+      <tbody id="historyTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal-overlay" id="editSubjectModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>✏️ সাজিদ বিষয় এর নাম পরিবর্তন করো  -</h3>
+      <button class="close-btn" onclick="closeEditSubjectModal()">✕</button>
+    </div>
+    <input type="hidden" id="editSubjectIndex">
+    <label style="font-size:11px; font-weight:600;">নতুন নাম:</label>
+    <input id="editSubjectInput" type="text" style="width:100%; padding:6px; margin:4px 0 10px; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text); font-size:13px;">
+    <button class="btn blue-deepgreen-anim-btn" onclick="saveEditedSubject()">Save Changes</button>
+  </div>
+</div>
+
+<audio id="alarmAudio" loop></audio>
+
+<script>
+let wakeLock = null;
+async function requestWakeLock() {
+  try {
+    if ('wakeLock' in navigator) {
+      wakeLock = await navigator.wakeLock.request('screen');
+    }
+  } catch (err) {
+    console.log(`Screen Wake Lock error: ${err.name}, ${err.message}`);
+  }
+}
+
+document.addEventListener('visibilitychange', async () => {
+  if (wakeLock !== null && document.visibilityState === 'visible') {
+    await requestWakeLock();
+  }
+});
+requestWakeLock();
+
+const DAYS_NAME = { "0": "রবি", "1": "সোম", "2": "মঙ্গল", "3": "বুধ", "4": "বৃহ", "5": "শুক্র", "6": "শনি" };
+
+function getSelectedDays(containerId) {
+  let days = [];
+  let checkboxes = document.querySelectorAll(`#${containerId} .day-check`);
+  checkboxes.forEach(cb => {
+    if (cb.checked) days.push(cb.value);
+  });
+  return days;
+}
+
+function setSelectedDays(containerId, daysArray) {
+  let checkboxes = document.querySelectorAll(`#${containerId} .day-check`);
+  checkboxes.forEach(cb => {
+    cb.checked = Array.isArray(daysArray) && daysArray.includes(cb.value);
+  });
+}
+
+function toggleSelectAllDays(masterCb, containerId) {
+  let checkboxes = document.querySelectorAll(`#${containerId} .day-check`);
+  checkboxes.forEach(cb => cb.checked = masterCb.checked);
+}
+
+function formatDaysDisplay(daysArray) {
+  if (!daysArray || daysArray.length === 0 || daysArray.length === 7) return "প্রতিদিন";
+  return daysArray.map(d => DAYS_NAME[d] || d).join(', ');
+}
+
+function openRingtoneDB() {
+  return new Promise((resolve, reject) => {
+    let req = indexedDB.open("RingtoneDB", 1);
+    req.onupgradeneeded = function(e) {
+      let db = e.target.result;
+      if (!db.objectStoreNames.contains("ringtones")) {
+        db.createObjectStore("ringtones");
+      }
+    };
+    req.onsuccess = function(e) { resolve(e.target.result); };
+    req.onerror = function(e) { reject(e); };
+  });
+}
+
+async function saveRingtoneDB(key, dataUrl) {
+  try {
+    let db = await openRingtoneDB();
+    let tx = db.transaction("ringtones", "readwrite");
+    let store = tx.objectStore("ringtones");
+    store.put(dataUrl, key);
+  } catch(e) { console.error(e); }
+}
+
+async function getRingtoneDB(key) {
+  try {
+    let db = await openRingtoneDB();
+    return new Promise((resolve) => {
+      let tx = db.transaction("ringtones", "readonly");
+      let store = tx.objectStore("ringtones");
+      let req = store.get(key);
+      req.onsuccess = () => resolve(req.result || "");
+      req.onerror = () => resolve("");
+    });
+  } catch(e) { return ""; }
+}
+
+let customInputCallback = null;
+function showCustomInputModal(message, type, defaultValue, callback) {
+  $('customInputMessage').textContent = message;
+  let inputField = $('customInputField');
+  let cancelBtn = $('customInputCancelBtn');
+  let okBtn = $('customInputOkBtn');
+  
+  customInputCallback = callback;
+  if(type === 'prompt') {
+    inputField.style.display = 'block';
+    inputField.value = defaultValue !== undefined ? defaultValue : '';
+    cancelBtn.style.display = 'inline-block';
+    okBtn.textContent = 'সেভ কর ';
+  } else if(type === 'confirm') {
+    inputField.style.display = 'none';
+    cancelBtn.style.display = 'inline-block';
+    cancelBtn.textContent = 'না থাক ';
+    okBtn.textContent = 'ঠিক আছে';
+  } else if(type === 'alert') {
+    inputField.style.display = 'none';
+    cancelBtn.style.display = 'none';
+    okBtn.textContent = 'OK';
+  }
+  $('customInputModal').classList.add('active');
+  if(type === 'prompt') {
+    setTimeout(() => {
+      inputField.focus();
+      inputField.select();
+    }, 50);
+  }
+}
+
+function resolveCustomInput(isOk) {
+  $('customInputModal').classList.remove('active');
+  let val = $('customInputField').value;
+  if(customInputCallback) {
+    const cb = customInputCallback;
+    customInputCallback = null;
+    cb(isOk, val);
+  }
+}
+
+function promptAsync(message, defaultValue) {
+  return new Promise((resolve) => {
+    showCustomInputModal(message, 'prompt', defaultValue, (isOk, val) => {
+      if (isOk) resolve(val);
+      else resolve(null);
+    });
+  });
+}
+
+function fixUrl(u){
+  u=String(u||'').trim();
+  if(!u) return 'about:blank';
+  if(/^https?:\/\//i.test(u)) return u;
+  return 'https://'+u.replace(/^\/+/,'');
+}
+
+function syncAlarmsWithAndroid() {
+  try {
+    if (typeof Android !== "undefined" && typeof Android.syncAlarms === "function") {
+      const all = ["0","1","2","3","4","5","6"], list = [];
+      (data.routines || []).forEach((r, i) => {
+        const rd = (r.days && r.days.length) ? r.days : all;
+        list.push({id: "r" + i, time: r.time, task: r.task, days: rd.map(Number), ring: r.ringId || "", vib: (r.vibrate === true ? "on" : (r.vibrate || "")) });
+        (r.subRoutines || []).forEach((sr, j) => {
+          const sd = (sr.days && sr.days.length) ? sr.days : rd;
+          list.push({id: "r" + i + "_" + j, time: sr.time, task: r.task + " - " + sr.task, days: sd.map(Number), ring: sr.ringId || r.ringId || "", vib: (sr.vibrate === true ? "on" : (sr.vibrate || "")) || (r.vibrate === true ? "on" : (r.vibrate || "")) });
+        });
+      });
+      if (typeof Android.setDefaultVibrate === "function") Android.setDefaultVibrate(!!data.defaultVibrate);
+      Android.syncAlarms(JSON.stringify(list));
+    }
+  } catch(e) { console.error("Android sync error", e); }
+}
+
+function showCustomAlert(message) {
+  $('customAlertMessage').textContent = message;
+  $('customAlertModal').classList.add('active');
+}
+function closeCustomAlert() {
+  $('customAlertModal').classList.remove('active');
+}
+
+const $=id=>document.getElementById(id);
+
+let isStudyRunning = false;
+let isTopStopwatchRunning = false;
+let isTodoStopwatchRunning = false;
+
+let lastTickTime = Date.now();
+
+let selectedTimeMs=0, remainingMs=0;
+let tabStopwatchMs = 0;
+let topStopwatchMs = 0;
+
+function toggleTimerFullscreen() {
+  const timerCard = $('mainTimerCard');
+  timerCard.classList.toggle('fullscreen');
+  const isFs = timerCard.classList.contains('fullscreen');
+  $('fullscreenToggleBtn').textContent = isFs ? '✕' : '⛶';
+  
+  if (!isFs) {
+    let headerTitle = $('headerTitleText');
+    if (headerTitle) headerTitle.textContent = "SAJID'S STUDY TRACKER";
+  } else {
+    updateDateTimeBanner();
+  }
+}
+
+function stopOtherTimers(activeType) {
+  if (activeType !== 'study' && isStudyRunning) {
+      isStudyRunning = false;
+      localStorage.removeItem('study_running_state');
+      sessionStorage.removeItem('study_running_state');
+      selectedTimeMs = 0;
+      remainingMs = 0;
+      if($('studyTime')) $('studyTime').textContent = fmtMs(0);
+      if($('startBtn')) $('startBtn').textContent='Start';
+  }
+  if (activeType !== 'top' && isTopStopwatchRunning) {
+      isTopStopwatchRunning = false;
+      localStorage.removeItem('top_sw_running_state');
+      sessionStorage.removeItem('top_sw_running_state');
+      if($('topStartBtn')) $('topStartBtn').textContent = 'Start';
+  }
+  if (activeType !== 'todo' && isTodoStopwatchRunning) {
+      isTodoStopwatchRunning = false;
+      localStorage.removeItem('todo_sw_running_state');
+      sessionStorage.removeItem('todo_sw_running_state');
+      if($('todoStartBtn')) $('todoStartBtn').textContent = 'Start';
+  }
+  save();
+}
+
+let currentUsername = localStorage.getItem('studyzone_current_user') || '';
+let allUsersData = JSON.parse(localStorage.getItem('studyzone_all_users') || '{}');
+
+let defaultUserData = {
+  isLoggedIn: false,
+  isFirstLogin: true,
+  username: "",
+  secondsMs: 0,
+  sessions: 0,
+  todos: [],
+  namaz: {fajr:false, dhuhr:false, asr:false, maghrib:false, isha:false},
+  name: "STUDENT",
+  photo: "",
+  theme: "light",
+  goalHours: 0,
+  goalMinutes: 0,
+  subjects: [],
+  subjectTimes: {},
+  screenMs: 0,
+  routines: [],
+  socials: [],
+  ringtone: "",
+  timerInstruction: " ",
+  heroInstruction: "সাজিদ লক্ষ্যহীন যাত্রা মানুষকে ক্লান্ত করে, কিন্তু একটি সুনির্দিষ্ট লক্ষ্য তোমাকে এনে দেবে কাজের গতি। অহেতুক বাহানা আর অলসতাকে এখনই পেছনে ফেলে দাও। এখনই \"সেলফ ট্র্যাকার \" বাটনে চাপ দাও এবং পড়া শুরু করো! সাজিদ তোমার জন্য শুভকামনা রইল।",
+  lastResetDate: "",
+  streakCount: 1,
+  lastActiveDate: "",
+  history: {}
+};
+
+let data = currentUsername && allUsersData[currentUsername] ? allUsersData[currentUsername] : defaultUserData;
+let activeSubSocialParentIdx = -1;
+let lastTriggeredTime = "";
+
+if(data.seconds !== undefined && data.secondsMs === undefined) data.secondsMs = data.seconds * 1000;
+if(data.screenSeconds !== undefined && data.screenMs === undefined) data.screenMs = data.screenSeconds * 1000;
+if(data.goalMinutes === undefined) data.goalMinutes = 0;
+if(data.isFirstLogin === undefined) data.isFirstLogin = true;
+if(!data.subjectTimes) data.subjectTimes = {};
+if(data.timerInstruction === undefined) data.timerInstruction = " ";
+if(data.heroInstruction === undefined) data.heroInstruction = "সাজিদ লক্ষ্যহীন যাত্রা মানুষকে ক্লান্ত করে, কিন্তু একটি সুনির্দিষ্ট লক্ষ্য তোমাকে এনে দেবে কাজের গতি। অহেতুক বাহানা আর অলসতাকে এখনই পেছনে ফেলে দাও। এখনই \"সেলফ ট্র্যাকার \" বাটনে চাপ দাও এবং পড়া শুরু করো! সাজিদ তোমার জন্য শুভকামনা রইল।";
+
+function syncUserData(){
+  if(data.username){
+    allUsersData[data.username] = data;
+    try {
+      localStorage.setItem('studyzone_all_users', JSON.stringify(allUsersData));
+      localStorage.setItem('studyzone_current_user', data.username);
+    } catch (e) {
+      console.error("Storage limit exceeded", e);
+    }
+  }
+}
+
+if(!Array.isArray(data.subjects)) data.subjects = [];
+data.subjects = data.subjects.map(sub => {
+  if (typeof sub === 'string') {
+    return { name: sub, pinned: false };
+  }
+  return sub;
+});
+
+if(!Array.isArray(data.routines)) data.routines = [];
+if(!Array.isArray(data.socials)) data.socials = [];
+if(!data.namaz) data.namaz = {fajr:false, dhuhr:false, asr:false, maghrib:false, isha:false};
+if(data.screenMs === undefined) data.screenMs = 0;
+if(data.secondsMs === undefined) data.secondsMs = 0;
+if(!data.history || typeof data.history !== 'object') data.history = {};
+if(data.streakCount === undefined) data.streakCount = 1;
+
+function getActiveCycleDate() {
+  const now = new Date();
+  const hour = now.getHours();
+  let cycleDate = new Date(now.getTime());
+  if (hour < 3) cycleDate.setDate(cycleDate.getDate() - 1);
+  let y = cycleDate.getFullYear();
+  let m = String(cycleDate.getMonth() + 1).padStart(2, '0');
+  let d = String(cycleDate.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+function formatDateDDMMYY(dateStr) {
+  if (!dateStr) return '';
+  let parts = dateStr.split('-');
+  if (parts.length === 3) {
+    let y = parts[0].slice(-2);
+    let m = parts[1];
+    let d = parts[2];
+    return `${d}/${m}/${y}`;
+  }
+  return dateStr;
+}
+
+function checkAndResetDailyData() {
+  const cycleKey = getActiveCycleDate();
+
+  if (!data.lastResetDate) {
+    data.lastResetDate = cycleKey;
+    data.lastActiveDate = cycleKey;
+    data.streakCount = 1;
+  } else if (data.lastResetDate !== cycleKey) {
+    let namazCount = Object.values(data.namaz || {}).filter(Boolean).length;
+    data.history[data.lastResetDate] = {
+      studySeconds: Math.floor((data.secondsMs || 0) / 1000),
+      screenSeconds: Math.floor((data.screenMs || 0) / 1000),
+      namazCount: namazCount,
+      subjectTimes: {...data.subjectTimes}
+    };
+
+    let historyKeys = Object.keys(data.history).sort();
+    if(historyKeys.length > 30) {
+      for(let i = 0; i < historyKeys.length - 30; i++) delete data.history[historyKeys[i]];
+    }
+
+    let lastDateObj = new Date(data.lastActiveDate || cycleKey);
+    let currDateObj = new Date(cycleKey);
+    let diffDays = Math.ceil(Math.abs(currDateObj - lastDateObj) / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 1) data.streakCount = (data.streakCount || 1) + 1;
+    else if (diffDays > 1) data.streakCount = 1;
+
+    data.secondsMs = 0;
+    data.sessions = 0;
+    data.screenMs = 0;
+    Object.keys(data.subjectTimes).forEach(key => data.subjectTimes[key] = 0);
+        
+    data.namaz = {fajr:false, dhuhr:false, asr:false, maghrib:false, isha:false};
+    data.todos.forEach(t => t.done = false);       
+    
+    if(Array.isArray(data.routines)){
+      data.routines.forEach(r => r.done = false);
+    }
+
+    data.lastResetDate = cycleKey;
+    data.lastActiveDate = cycleKey;
+    save();
+  } else {
+    data.lastActiveDate = cycleKey;
+  }
+}
+
+checkAndResetDailyData();
+
+function curSubjectName(){
+  let el = $('subjectSelect'); let v = el ? el.value : '';
+  return (v && v !== 'Add Subjects ') ? v : '';
+}
+function addMsToSubject(sub, ms){
+  if(!sub || !(ms > 0)) return;
+  if(!data.subjectTimes) data.subjectTimes = {};
+  data.subjectTimes[sub] = (data.subjectTimes[sub] || 0) + ms;
+}
+function flushAllTimersToStorage(){
+  try { saveRunningStateImmediately(); syncUserData(); } catch(e){}
+}
+function saveRunningStateImmediately() {
+  let now = Date.now();
+  if (isStudyRunning) {
+    let stateObj = { active: true, timestamp: now, subject: $('subjectSelect') ? $('subjectSelect').value : '' };
+    localStorage.setItem('study_running_state', JSON.stringify(stateObj));
+    sessionStorage.setItem('study_running_active', 'true');
+  }
+  if (isTopStopwatchRunning) {
+    let stateObj = { active: true, timestamp: now };
+    localStorage.setItem('top_sw_running_state', JSON.stringify(stateObj));
+    sessionStorage.setItem('top_sw_running_active', 'true');
+  }
+  if (isTodoStopwatchRunning) {
+    let stateObj = { active: true, timestamp: now, subject: curSubjectName() };
+    localStorage.setItem('todo_sw_running_state', JSON.stringify(stateObj));
+    sessionStorage.setItem('todo_sw_running_active', 'true');
+  }
+}
+
+window.addEventListener('pagehide', flushAllTimersToStorage);
+window.addEventListener('beforeunload', () => {
+  saveRunningStateImmediately();
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    saveRunningStateImmediately();
+  } else if (document.visibilityState === 'visible') {
+    restoreRunningTimers();
+  }
+});
+
+function restoreRunningTimers() {
+  let now = Date.now();
+  let isSessionAlive = sessionStorage.getItem('study_running_active') || sessionStorage.getItem('top_sw_running_active') || sessionStorage.getItem('todo_sw_running_active');
+  
+  if (!isSessionAlive) {
+    localStorage.removeItem('study_running_state');
+    localStorage.removeItem('top_sw_running_state');
+    localStorage.removeItem('todo_sw_running_state');
+    isStudyRunning = false;
+    isTopStopwatchRunning = false;
+    isTodoStopwatchRunning = false;
+    return;
+  }
+
+  let studyLocal = localStorage.getItem('study_running_state');
+  if (studyLocal && sessionStorage.getItem('study_running_active')) {
+    try {
+      let st = JSON.parse(studyLocal);
+      let elapsed = now - (st.timestamp || now);
+      if (elapsed > 0 && elapsed < 86400000) {
+        if (selectedTimeMs > 0) {
+          remainingMs -= elapsed;
+          if (remainingMs < 0) remainingMs = 0;
+        }
+        data.secondsMs = (data.secondsMs || 0) + elapsed;
+        addMsToSubject(st.subject || curSubjectName(), elapsed);
+      }
+      isStudyRunning = true;
+      if($('startBtn')) $('startBtn').textContent = 'Pause';
+      if(st.subject && $('subjectSelect')) $('subjectSelect').value = st.subject;
+    } catch(e) {
+      localStorage.removeItem('study_running_state');
+    }
+  }
+
+  let topLocal = localStorage.getItem('top_sw_running_state');
+  if (topLocal && sessionStorage.getItem('top_sw_running_active')) {
+    try {
+      let st = JSON.parse(topLocal);
+      let elapsed = now - (st.timestamp || now);
+      if (elapsed > 0 && elapsed < 86400000) {
+        topStopwatchMs += elapsed;
+        data.screenMs = (data.screenMs || 0) + elapsed;
+      }
+      isTopStopwatchRunning = true;
+      if($('topStartBtn')) $('topStartBtn').textContent = 'Pause';
+    } catch(e) {
+      localStorage.removeItem('top_sw_running_state');
+    }
+  }
+
+  let todoLocal = localStorage.getItem('todo_sw_running_state');
+  if (todoLocal && sessionStorage.getItem('todo_sw_running_active')) {
+    try {
+      let st = JSON.parse(todoLocal);
+      let elapsed = now - (st.timestamp || now);
+      if (elapsed > 0 && elapsed < 86400000) {
+        tabStopwatchMs += elapsed;
+        data.secondsMs = (data.secondsMs || 0) + elapsed;
+        addMsToSubject(st.subject || curSubjectName(), elapsed);
+      }
+      isTodoStopwatchRunning = true;
+      if($('todoStartBtn')) $('todoStartBtn').textContent = 'Pause';
+    } catch(e) {
+      localStorage.removeItem('todo_sw_running_state');
+    }
+  }
+  
+  lastTickTime = Date.now();
+  save();
+}
+
+window.addEventListener('pageshow', (event) => {
+  restoreRunningTimers();
+});
+
+let editingSocialIndex = -1;
+
+function save(){
+  syncUserData();
+  updateUI();
+}
+
+function fmtMs(totalMs){
+  if(totalMs < 0 || isNaN(totalMs)) totalMs = 0;
+  let totalSec = Math.floor(totalMs / 1000);
+  let cs = Math.floor((totalMs % 1000) / 10);
+  let h = Math.floor(totalSec / 3600);
+  let m = Math.floor((totalSec % 3600) / 60);
+  let s = totalSec % 60;
+
+  let csStr = String(cs).padStart(2, '0');
+  let sStr = String(s).padStart(2, '0');
+  let mStr = String(m).padStart(2, '0');
+
+  if(h > 0) return String(h).padStart(2,'0') + ':' + mStr + ':' + sStr + ':' + csStr;
+  return mStr + ':' + sStr + ':' + csStr;
+}
+
+function formatDetailedTimeNoMs(totalMs){
+  if(isNaN(totalMs) || totalMs < 0) totalMs = 0;
+  let totalSec = Math.floor(totalMs / 1000);
+  let h = Math.floor(totalSec / 3600);
+  let m = Math.floor((totalSec % 3600) / 60);
+  let s = totalSec % 60;
+
+  if(h > 0) return `${h}h ${m}m ${s}s`;
+  if(m > 0) return `${m}m ${s}s`;
+  return `${s}s`;
+}
+
+function formatHoursAndMinsOnly(totalMs){
+  if(isNaN(totalMs) || totalMs < 0) totalMs = 0;
+  let totalSec = Math.floor(totalMs / 1000);
+  let h = Math.floor(totalSec / 3600);
+  let m = Math.floor((totalSec % 3600) / 60);
+  return `${h} Hours ${m} Mins`;
+}
+
+function checkAuthStatus(){
+  if(data.isLoggedIn && data.username){
+    $('authScreen').style.display = 'none';
+    $('mainAppContent').style.display = 'flex';
+    
+    if('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+      Notification.requestPermission();
+    }
+    
+    applyTheme(data.theme || 'light');
+    
+    checkAndResetDailyData();
+    restoreRunningTimers(); 
+    updateUI();
+    
+    syncAlarmsWithAndroid();
+    
+    let savedPage = sessionStorage.getItem('activePageId') || 'Dashboard';
+    if(data.isFirstLogin){
+      showPage('profile', null, false);
+    } else {
+      showPage(savedPage, null, false);
+    }
+  } else {
+    $('authScreen').style.display = 'flex';
+    $('mainAppContent').style.display = 'none';
+    resetAuthScreenToInitial();
+  }
+}
+
+function resetAuthScreenToInitial(){
+  $('authCardTitle').innerHTML = '<span class="anim-2-color" style="font-size: 16px; font-weight: 800;">সাজিদ অ্যাপে প্রবেশ করো </span>';
+  $('authInputWrapper').style.display = "none";
+  $('authMainBtn').textContent = "সাজিদ লগইন করো ";
+  $('authBackBtn').style.display = "none";
+}
+
+function handleAuthButtonClick(){
+  let inputWrapper = $('authInputWrapper');
+  if(inputWrapper.style.display === "none"){
+    $('authCardTitle').innerHTML = '<span class="anim-2-color" style="font-size: 16px; font-weight: 800;">নাম দিয়ে প্রবেশ</span>';
+    inputWrapper.style.display = "block";
+    $('authMainBtn').textContent = "সাজিদ লগইন সম্পন্ন করো ";
+    $('authBackBtn').style.display = "block";
+  } else {
+    handleLogin();
+  }
+}
+
+function handleLogin(){
+  let loginInput = $('loginUsername').value.trim().toUpperCase();
+  if(!loginInput){
+    showCustomAlert('দয়া করে আপনার নাম দিন!');
+    return;
+  }
+
+  let existingUserKey = "";
+  for(let key in allUsersData){
+    if(key === loginInput || allUsersData[key].name === loginInput){
+      existingUserKey = key;
+      break;
+    }
+  }
+
+  if(existingUserKey){
+    data = allUsersData[existingUserKey];
+    if(Array.isArray(data.subjects)){
+      data.subjects = data.subjects.map(sub => {
+        if (typeof sub === 'string') return { name: sub, pinned: false };
+        return sub;
+      });
+    }
+  } else {
+    data = {
+      ...defaultUserData,
+      isLoggedIn: true,
+      isFirstLogin: true,
+      name: loginInput,
+      username: loginInput,
+      lastResetDate: getActiveCycleDate(),
+      lastActiveDate: getActiveCycleDate(),
+      streakCount: 1
+    };
+    allUsersData[loginInput] = data;
+  }
+
+  data.isLoggedIn = true;
+  data.isFirstLogin = true; 
+  currentUsername = data.username;
+  localStorage.setItem('studyzone_current_user', currentUsername);
+  
+  syncUserData();
+  checkAuthStatus();
+}
+
+function handleLogout(){
+  showCustomInputModal(' লগ আউট করা হচ্ছে...', 'confirm', '', (isOk) => {
+    if(isOk) {
+      data.isLoggedIn = false;
+      syncUserData();
+      localStorage.removeItem('studyzone_current_user');
+      currentUsername = '';
+      checkAuthStatus();
+    }
+  });
+}
+
+function updateUI(){
+ const name = data.name || 'STUDENT';
+ $('userName').textContent = name; 
+ $('welcomeText').textContent = 'স্বাগতম, ' + name + ' 👋';
+ $('nameInput').value = name;
+ 
+ if($('timerInstructionInput')) $('timerInstructionInput').value = data.timerInstruction || " ";
+ if($('timerCardSubtitle')) $('timerCardSubtitle').textContent = data.timerInstruction || " ";
+
+ if($('heroInstructionInput')) $('heroInstructionInput').value = data.heroInstruction || "";
+ if($('heroInstructionText')) $('heroInstructionText').textContent = data.heroInstruction || "";
+ 
+ $('fullscreenUserName').textContent = name;
+
+ renderAvatarHTML();
+
+ let DashboardStudyText = formatHoursAndMinsOnly(data.secondsMs || 0);
+ $('todayHours').textContent = DashboardStudyText;
+
+ let trackerStudyText = formatDetailedTimeNoMs(data.secondsMs || 0);
+ $('trackerBoxTotalStudy').textContent = trackerStudyText;
+
+ $('totalStudy').textContent = trackerStudyText; 
+ $('sessions').textContent = data.sessions;
+ $('average').textContent = data.sessions ? formatDetailedTimeNoMs(Math.round((data.secondsMs || 0) / data.sessions)) : '0s';
+ 
+ let goalH = Number(data.goalHours) || 0;
+ let goalM = Number(data.goalMinutes) || 0;
+ let totalGoalSec = (goalH * 3600) + (goalM * 60);
+
+ let pct = totalGoalSec > 0 ? Math.min(100, Math.round(((data.secondsMs || 0) / 1000) / totalGoalSec * 100)) : 0;
+ $('goalPercent').textContent = pct + '%';
+ $('goalDisplay').textContent = `${goalH} Hours ${goalM} Mins`;
+ 
+ let totalTodos = data.todos.length;
+ let doneTodos = data.todos.filter(x=>x.done).length;
+ $('doneCount').textContent = totalTodos + ' / ' + doneTodos;
+
+ let namazCount = Object.values(data.namaz).filter(Boolean).length;
+ $('namazDashboardCount').textContent = '5 / ' + namazCount;
+
+ $('streak').textContent = `${data.streakCount || 1} দিন`;
+ 
+ let totalScrMs = data.screenMs || 0;
+ let formattedScrTime = formatDetailedTimeNoMs(totalScrMs);
+ $('screenTimeDisplay').textContent = formattedScrTime;
+ if($('screenTimeDisplay2')) $('screenTimeDisplay2').textContent = formattedScrTime;
+ 
+ renderTodos();
+ renderNamaz();
+ renderSubjects();
+ renderReport();
+ renderRoutines();
+ renderSocialList();
+}
+
+function renderAvatarHTML(){
+  const photo = data.photo;
+  if(photo){
+    $('headerAvatar').innerHTML = `<img src="${photo}" class="avatar-img">`;
+    $('userAvatarDisplay').innerHTML = `<img src="${photo}" class="avatar-img">`;
+    $('profilePreview').innerHTML = `<img src="${photo}">`;
+    $('fullscreenUserAvatar').innerHTML = `<img src="${photo}">`;
+  } else {
+    $('headerAvatar').textContent = ' ';
+    $('userAvatarDisplay').textContent = ' ';
+    $('profilePreview').textContent = ' ';
+    $('fullscreenUserAvatar').textContent = ' ';
+  }
+}
+
+function handleImageUpload(e){
+  const file = e.target.files[0];
+  if(file){
+    const reader = new FileReader();
+    reader.onload = function(evt){
+      data.photo = evt.target.result;
+      save();
+    }
+    reader.readAsDataURL(file);
+  }
+}
+
+function removePhoto(){
+  data.photo = "";
+  $('photoInput').value = "";
+  save();
+}
+
+function openThemeModal(){ $('themeModal').classList.add('active'); updateThemeSelection(); }
+function closeThemeModal(){ $('themeModal').classList.remove('active'); }
+
+function openMediaModal(){ 
+  $('mediaModal').classList.add('active'); 
+  closeInlineSubSocialSection(); 
+}
+function closeMediaModal(){ 
+  $('mediaModal').classList.remove('active'); 
+  closeInlineSubSocialSection(); 
+}
+
+function showAddSocialForm(){
+  editingSocialIndex = -1;
+  $('socialFormTitle').textContent = "Add Item";
+  $('socialNameInput').value = "";
+  $('socialLinkInput').value = "";
+  $('socialAddBox').style.display = "block";
+  $('openAddSocialBtn').style.display = "none";
+}
+
+function cancelSocialForm(){
+  $('socialAddBox').style.display = "none";
+  $('openAddSocialBtn').style.display = "block";
+  editingSocialIndex = -1;
+}
+
+function saveSocialMedia(){
+  let name = $('socialNameInput').value.trim();
+  let link = $('socialLinkInput').value.trim();
+
+  if(!name || !link){
+    showCustomAlert('দয়া করে নাম ও লিংক দুটোই প্রবেশ করান!');
+    return;
+  }
+  if(!link.startsWith('http://') && !link.startsWith('https://')){
+    link = 'https://' + link;
+  }
+  if(!Array.isArray(data.socials)) data.socials = [];
+
+  if(editingSocialIndex >= 0){
+    data.socials[editingSocialIndex].name = name;
+    data.socials[editingSocialIndex].link = link;
+  } else {
+    data.socials.push({ name, link, pinned: false, subSocials: [] });
+  }
+
+  save();
+  cancelSocialForm();
+}
+
+function editSocial(index){
+  let item = data.socials[index];
+  if(!item) return;
+  editingSocialIndex = index;
+  $('socialFormTitle').textContent = "Edit Item";
+  $('socialNameInput').value = item.name;
+  $('socialLinkInput').value = item.link;
+  $('socialAddBox').style.display = "block";
+  $('openAddSocialBtn').style.display = "none";
+}
+
+function deleteSocial(index){
+  showCustomInputModal(' লিংকটি মুছে ফেলা হচ্ছে... ', 'confirm', '', (isOk) => {
+    if(isOk) {
+      if(activeSubSocialParentIdx === index) closeInlineSubSocialSection();
+      data.socials.splice(index, 1);
+      save();
+    }
+  });
+}
+
+function togglePinSocial(index){
+  if(!Array.isArray(data.socials)) return;
+  data.socials[index].pinned = !data.socials[index].pinned;
+  data.socials.sort((a, b) => (b.pinned === true) - (a.pinned === true));
+  save();
+}
+
+function openInlineSubSocialSection(parentIdx){
+  activeSubSocialParentIdx = parentIdx;
+  let item = data.socials[parentIdx];
+  $('inlineSubSocialTitle').textContent = `Subtitles (${item.name})`;
+  renderInlineSubSocials();
+  $('inlineSubSocialSection').style.display = 'block';
+}
+
+function closeInlineSubSocialSection(){
+  $('inlineSubSocialSection').style.display = 'none';
+  activeSubSocialParentIdx = -1;
+  $('inlineSubName').value = '';
+  $('inlineSubLink').value = '';
+}
+
+function addInlineSubSocial(){
+  if(activeSubSocialParentIdx < 0) return;
+  let name = $('inlineSubName').value.trim();
+  let link = $('inlineSubLink').value.trim();
+
+  if(!name || !link){
+    showCustomAlert('সাবটাইটেল নাম এবং লিংক দুটোই লেখো!');
+    return;
+  }
+
+  if(!link.startsWith('http://') && !link.startsWith('https://')){
+    link = 'https://' + link;
+  }
+
+  if(!Array.isArray(data.socials[activeSubSocialParentIdx].subSocials)){
+    data.socials[activeSubSocialParentIdx].subSocials = [];
+  }
+
+  data.socials[activeSubSocialParentIdx].subSocials.push({ name, link });
+  $('inlineSubName').value = '';
+  $('inlineSubLink').value = '';
+  save();
+  renderInlineSubSocials();
+  renderSocialList();
+}
+
+function delInlineSubSocial(subIdx){
+  showCustomInputModal('সাবটাইটেল লিংকটি মুছে ফেলা হচ্ছে... .?', 'confirm', '', (isOk) => {
+    if(isOk){
+      if(activeSubSocialParentIdx < 0) return;
+      data.socials[activeSubSocialParentIdx].subSocials.splice(subIdx, 1);
+      save();
+      renderInlineSubSocials();
+      renderSocialList();
+    }
+  });
+}
+
+function renderInlineSubSocials(){
+  if(activeSubSocialParentIdx < 0) return;
+  let list = data.socials[activeSubSocialParentIdx].subSocials || [];
+  let listEl = $('inlineSubSocialList');
+
+  if(list.length === 0){
+    listEl.innerHTML = `<div class="muted" style="text-align:center; font-size:12px;">কোনো সাবটাইটেল নেই।</div>`;
+    return;
+  }
+
+  listEl.innerHTML = list.map((sub, idx) => `
+    <div class="social-item" style="margin-bottom:2px; padding:6px 8px;">
+      <div style="flex:1;">
+        <a href="${esc(fixUrl(sub.link))}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; color:var(--primary); font-weight:800; font-size:12px;">${esc(sub.name)}</a>
+        <div class="muted" style="font-size:9px; word-break:break-all;">${esc(sub.link)}</div>
+      </div>
+      <button class="btn sm danger" onclick="delInlineSubSocial(${idx})" style="padding:1px 4px; font-size:10px;">✕</button>
+    </div>
+  `).join('');
+}
+
+function renderSocialList(){
+  let listEl = $('socialList');
+  if(!Array.isArray(data.socials) || data.socials.length === 0){
+    listEl.innerHTML = '<p class="muted" style="text-align:center;">এখানে যেকোনো ওয়েবসাইটের লিংক যোগ করে ব্যবহার করা যাবে। </p>';
+    return;
+  }
+
+  listEl.innerHTML = data.socials.map((item, idx) => `
+    <div class="social-item ${item.pinned ? 'pinned' : ''}">
+      <div style="flex:1;">
+        <a href="${esc(fixUrl(item.link))}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; color:var(--primary); font-weight:800; font-size:13px;">${item.pinned ? '📌 ' : ''}${esc(item.name)} ${item.subSocials && item.subSocials.length ? `(${item.subSocials.length})` : ''}</a>
+        <div class="muted" style="font-size:10px; word-break:break-all;">${esc(item.link)}</div>
+      </div>
+      <div style="display:flex; gap:4px; align-items:center;">
+        <button class="btn sm secondary" onclick="togglePinSocial(${idx})" style="padding:2px 6px; font-size:11px;" title="Pin/Unpin">${item.pinned ? 'Unpin' : 'Pin'}</button>
+        <button class="btn sm secondary" onclick="openInlineSubSocialSection(${idx})" style="padding:2px 6px; font-size:11px;" title="Subtitle">Subtitle</button>
+        <button class="btn sm secondary" onclick="editSocial(${idx})" style="padding:2px 6px; font-size:11px;">Edit</button>
+        <button class="btn sm danger" onclick="deleteSocial(${idx})" style="padding:2px 6px; font-size:11px;">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function applyTheme(themeName){
+  data.theme = themeName;
+  if(themeName === 'light'){
+    document.documentElement.removeAttribute('data-theme');
+  } else {
+    document.documentElement.setAttribute('data-theme', themeName);
+  }
+  updateThemeSelection();
+}
+
+function updateThemeSelection(){
+  const current = data.theme || 'light';
+  document.querySelectorAll('.theme-option').forEach(el => {
+    if(el.getAttribute('onclick').includes(`'${current}'`)){
+      el.classList.add('selected');
+    } else {
+      el.classList.remove('selected');
+    }
+  });
+}
+
+function toggleHeaderMenu(event) {
+  event.stopPropagation();
+  $('headerDropdownMenu').classList.toggle('active');
+}
+
+function handleMenuSelection(action) {
+  $('headerDropdownMenu').classList.remove('active');
+  if(action === 'Dashboard') {
+    showPage('Dashboard', document.querySelector('.nav button:nth-child(1)'));
+  } else if(action === 'tracker') {
+    showPage('tracker', document.querySelector('.nav button:nth-child(2)'));
+  } else if(action === 'routine') {
+    showPage('routine', document.querySelector('.nav button:nth-child(3)'));
+  } else if(action === 'profile') {
+    showPage('profile', null);
+  } else if(action === 'logout') {
+    handleLogout();
+  }
+}
+
+window.addEventListener('click', () => {
+  const menu = $('headerDropdownMenu');
+  if(menu && menu.classList.contains('active')) {
+    menu.classList.remove('active');
+  }
+});
+
+function showPage(id, btn){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ $(id).classList.add('active');
+ document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+ 
+ if(btn && btn.tagName === 'BUTTON' && btn.parentElement.classList.contains('nav')) {
+   btn.classList.add('active');
+ } else {
+   const navButtons = document.querySelectorAll('.nav button');
+   if(id === 'Dashboard' && navButtons[0]) navButtons[0].classList.add('active');
+   if(id === 'tracker' && navButtons[1]) navButtons[1].classList.add('active');
+   if(id === 'routine' && navButtons[2]) navButtons[2].classList.add('active');
+ }
+ 
+ const titles={Dashboard:"Today's Dashboard",tracker:'Self Tracker',routine:"Sajid's Daily Routine",profile:'Profile Settings'};
+ $('pageTitle').textContent=titles[id];
+
+ if(id === 'Dashboard') {
+   $('userHeaderBadge').style.display = 'flex';
+   $('topSocialMediaBtn').style.display = 'none';
+ } else if(id === 'tracker') {
+   $('userHeaderBadge').style.display = 'none';
+   $('topSocialMediaBtn').style.display = 'inline-block';
+ } else {
+   $('userHeaderBadge').style.display = 'none';
+   $('topSocialMediaBtn').style.display = 'none';
+ }
+
+ sessionStorage.setItem('activePageId', id);
+}
+
+async function setCustomGoal() {
+  let hoursVal = await promptAsync('সাজিদ আজকে ঘণ্টা পড়তে চাও ?(Hour):', data.goalHours !== undefined ? data.goalHours : 0);
+  if (hoursVal === null || hoursVal.trim() === '') return;
+  let minsVal = await promptAsync('সাজিদ আজকে মিনিট পড়তে চাও ?(Minute):', data.goalMinutes !== undefined ? data.goalMinutes : 0);
+  if (minsVal === null || minsVal.trim() === '') return;
+  let hours = parseInt(hoursVal, 10);
+  let mins = parseInt(minsVal, 10);
+  if (!isNaN(hours) && hours >= 0 && !isNaN(mins) && mins >= 0) {
+    data.goalHours = hours;
+    data.goalMinutes = mins;
+    save();
+    showCustomAlert("সাজিদ আজকের লক্ষ্য সফলভাবে সেভ হয়েছে!");
+  } else {
+    showCustomAlert("সঠিক সংখ্যা ইনপুট দিন!");
+  }
+}
+
+function setCustomMinutes(){
+  showCustomInputModal('সাজিদ কত মিনিট পড়তে চাও ? ', 'prompt', remainingMs > 45 ? Math.floor(remainingMs/60000) : 45, (isOk, minsVal) => {
+    if(!isOk || !minsVal) return;
+    let mins = parseInt(minsVal);
+    if(mins && !isNaN(mins) && mins > 0){
+       if(isStudyRunning){
+         isStudyRunning = false;
+         localStorage.removeItem('study_running_state');
+         sessionStorage.removeItem('study_running_active');
+         $('startBtn').textContent='Start';
+       }
+       selectedTimeMs = mins * 60 * 1000;
+       remainingMs = selectedTimeMs;
+       $('studyTime').textContent = fmtMs(remainingMs);
+       save();
+    }
+  });
+}
+
+function toggleStudy(){
+ if(remainingMs <= 00) {
+    showCustomAlert('সাজিদ দয়া করে সময় নির্ধারণ করো !');
+    return;
+ }
+ if(isStudyRunning){
+    isStudyRunning = false;
+    localStorage.removeItem('study_running_state');
+    sessionStorage.removeItem('study_running_active');
+    $('startBtn').textContent='Start';
+    save();
+    return;
+ }
+ stopOtherTimers('study');
+ $('startBtn').textContent='Pause';
+ isStudyRunning = true;
+ let now = Date.now();
+ let stateObj = { active: true, timestamp: now, subject: $('subjectSelect') ? $('subjectSelect').value : '' };
+ localStorage.setItem('study_running_state', JSON.stringify(stateObj));
+ sessionStorage.setItem('study_running_active', 'true');
+ save();
+}
+
+function addTimeDeltaToCurrentSubject(delta) {
+  let subSelect = $('subjectSelect');
+  let currentSub = subSelect ? subSelect.value : "";
+  if (!currentSub || currentSub === 'Add Subjects ') return;
+  if(!data.subjectTimes) data.subjectTimes = {};
+  if(!data.subjectTimes[currentSub]) data.subjectTimes[currentSub] = 0;
+  data.subjectTimes[currentSub] += delta;
+}
+
+function updateStudyTick(delta){
+  remainingMs -= delta;
+  data.secondsMs = (data.secondsMs || 0) + delta;
+  addTimeDeltaToCurrentSubject(delta);
+  
+  if(isStudyRunning){
+    let stateObj = { active: true, timestamp: Date.now(), subject: $('subjectSelect') ? $('subjectSelect').value : '' };
+    localStorage.setItem('study_running_state', JSON.stringify(stateObj));
+    sessionStorage.setItem('study_running_active', 'true');
+  }
+  
+  save(); 
+  
+  if(remainingMs <= 0){
+    isStudyRunning = false;
+    localStorage.removeItem('study_running_state');
+    sessionStorage.removeItem('study_running_active');
+    data.sessions++;
+    remainingMs = selectedTimeMs > 0 ? selectedTimeMs : 0;
+    $('startBtn').textContent='Start';
+    save();
+    showCustomAlert('Your Study Session Complete ! 🎉');
+  } 
+  $('studyTime').textContent=fmtMs(Math.max(0, remainingMs));
+  $('trackerBoxTotalStudy').textContent = formatDetailedTimeNoMs(data.secondsMs);
+}
+
+function resetStudy(){
+ isStudyRunning = false;
+ localStorage.removeItem('study_running_state');
+ sessionStorage.removeItem('study_running_active');
+ $('startBtn').textContent='Start';
+ selectedTimeMs = 0;
+ remainingMs = 0;
+ $('studyTime').textContent = fmtMs(0);
+ save();
+}
+
+function toggleTopStopwatch(){
+  let now = Date.now();
+  if(isTopStopwatchRunning){
+    isTopStopwatchRunning = false;
+    localStorage.removeItem('top_sw_running_state');
+    sessionStorage.removeItem('top_sw_running_active');
+    $('topStartBtn').textContent = 'Start';
+    save();
+  } else {
+    stopOtherTimers('top');
+    $('topStartBtn').textContent = 'Pause';
+    isTopStopwatchRunning = true;
+    let stateObj = { active: true, timestamp: now };
+    localStorage.setItem('top_sw_running_state', JSON.stringify(stateObj));
+    sessionStorage.setItem('top_sw_running_active', 'true');
+    save();
+  }
+}
+
+function updateTopStopwatchTick(delta){
+  topStopwatchMs += delta;
+  data.screenMs = (data.screenMs || 0) + delta; 
+  if(isTopStopwatchRunning){
+    let stateObj = { active: true, timestamp: Date.now() };
+    localStorage.setItem('top_sw_running_state', JSON.stringify(stateObj));
+    sessionStorage.setItem('top_sw_running_active', 'true');
+  }
+  save();
+  $('topStopwatchDisplay').textContent = fmtMs(topStopwatchMs);
+  let totalScrMs = data.screenMs || 0;
+  let formattedScrTime = formatDetailedTimeNoMs(totalScrMs);
+  $('screenTimeDisplay').textContent = formattedScrTime;
+  if($('screenTimeDisplay2')) $('screenTimeDisplay2').textContent = formattedScrTime;
+}
+
+function resetTopStopwatch(){
+  if(isTopStopwatchRunning){
+    isTopStopwatchRunning = false;
+    localStorage.removeItem('top_sw_running_state');
+    sessionStorage.removeItem('top_sw_running_active');
+    $('topStartBtn').textContent = 'Start';
+  }
+  topStopwatchMs = 0;
+  $('topStopwatchDisplay').textContent = '00:00:00';
+  save();
+}
+
+function toggleTodoStopwatch(){
+  let now = Date.now();
+  if(isTodoStopwatchRunning){
+    isTodoStopwatchRunning = false;
+    localStorage.removeItem('todo_sw_running_state');
+    sessionStorage.removeItem('todo_sw_running_active');
+    $('todoStartBtn').textContent = 'Start';
+    save();
+  } else {
+    stopOtherTimers('todo');
+    $('todoStartBtn').textContent = 'Pause';
+    isTodoStopwatchRunning = true;
+    let stateObj = { active: true, timestamp: now, subject: curSubjectName() };
+    localStorage.setItem('todo_sw_running_state', JSON.stringify(stateObj));
+    sessionStorage.setItem('todo_sw_running_active', 'true');
+    save();
+  }
+}
+
+function updateTodoStopwatchTick(delta){
+  tabStopwatchMs += delta;
+  $('todoStopwatchDisplay').textContent = fmtMs(tabStopwatchMs);
+  
+  data.secondsMs = (data.secondsMs || 0) + delta;
+  addTimeDeltaToCurrentSubject(delta);
+  if(isTodoStopwatchRunning){
+    let stateObj = { active: true, timestamp: Date.now(), subject: curSubjectName() };
+    localStorage.setItem('todo_sw_running_state', JSON.stringify(stateObj));
+    sessionStorage.setItem('todo_sw_running_active', 'true');
+  }
+  save(); 
+  $('trackerBoxTotalStudy').textContent = formatDetailedTimeNoMs(data.secondsMs);
+}
+
+function resetTodoStopwatch(){
+  if(isTodoStopwatchRunning){
+    isTodoStopwatchRunning = false;
+    localStorage.removeItem('todo_sw_running_state');
+    sessionStorage.removeItem('todo_sw_running_active');
+    $('todoStartBtn').textContent = 'Start';
+  }
+  
+  if (tabStopwatchMs > 1500000) {
+    data.sessions = (data.sessions || 0) + 1;
+  }
+
+  tabStopwatchMs = 0;
+  $('todoStopwatchDisplay').textContent = '00:00:00';
+  save();
+}
+
+function addTodo(){
+  let v=$('todoInput').value.trim();
+  if(!v)return;
+  data.todos.push({text:v,done:false});
+  $('todoInput').value='';
+  save();
+}
+
+function toggleTodo(i){data.todos[i].done=!data.todos[i].done;save()}
+
+function editTodo(i){
+  promptAsync('টুডু বিষয় সংশোধন করুন:', data.todos[i].text).then(newText => {
+    if(newText !== null && newText.trim() !== '') {
+      data.todos[i].text = newText.trim();
+      save();
+    }
+  });
+}
+
+function delTodo(i){
+  showCustomInputModal('টুডু কাজটি মুছে ফেলা হচ্ছে...?', 'confirm', '', (isOk) => {
+    if(isOk) {
+      data.todos.splice(i,1);
+      save();
+    }
+  });
+}
+
+function renderTodos(){
+  const container = $('todoList');
+  if(data.todos.length > 5){
+    container.className = 'grid-view';
+  } else {
+    container.className = '';
+  }
+  container.innerHTML = data.todos.map((x,i)=>`
+    <div class="todo-item ${x.done?'done':''}">
+      <input type="checkbox" ${x.done?'checked':''} onchange="toggleTodo(${i})">
+      <span style="flex:1;word-break:break-word; font-weight:700;">${esc(x.text)}</span>
+      <button class="btn sm secondary" onclick="editTodo(${i})" style="padding:2px 5px; font-size:11px;">✏️</button>
+      <button class="btn danger sm" onclick="delTodo(${i})" style="padding:2px 5px; font-size:11px;">✕</button>
+    </div>
+  `).join('');
+}
+
+async function handleRingtoneUpload(e){
+  const file = e.target.files[0];
+  if(file){
+    if(file.size > 100 * 1024 * 1024){
+      showCustomAlert('ফাইল সাইজ খুব বড়! 100 MB এর কম সাইজের অডিও ব্যবহার করো ।');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = async function(evt){
+      let dataUrl = evt.target.result;
+      data.ringtone = "INDEXED_DB";
+      save();
+      await saveRingtoneDB("custom_ringtone", dataUrl);
+      $('ringtoneStatusText').textContent = "✓ রিংটোন সফলভাবে সেভ করা হয়েছে!";
+      showCustomAlert('কাস্টম রিংটোন সফলভাবে সেভ করা হয়েছে!');
+    }
+    reader.readAsDataURL(file);
+  }
+}
+
+const ringState = {
+  add:  {key:'', name:'', orig:'', pending:''},
+  edit: {key:'', name:'', orig:'', pending:''},
+  sub:  {key:'', name:'', orig:'', pending:''}
+};
+function isNativeApp(){ return typeof Android !== 'undefined' && typeof Android.pickRingtone === 'function'; }
+
+function refreshRingUI(w){
+  const st = ringState[w];
+  const row = $(w+'RingRow'); if(row) row.style.display = isNativeApp() ? 'flex' : 'none';
+  const nm = $(w+'RingName');
+  if(nm) nm.textContent = st.key ? ('🎵 ' + (st.name || 'নিজস্ব রিংটোন')) : (w === 'sub' ? 'মূল রুটিনের রিংটোন বাজবে' : 'ডিফল্ট রিংটোন বাজবে');
+  const clr = $(w+'RingClear'); if(clr) clr.style.display = st.key ? '' : 'none';
+}
+function dropUnsavedRing(w){
+  const st = ringState[w];
+  if(st.key && st.key !== st.orig){ try{ Android.deleteRingtone(st.key); }catch(e){} }
+}
+function pickRoutineRing(w){
+  if(!isNativeApp()){ showCustomAlert('রুটিনের আলাদা রিংটোন শুধু অ্যান্ড্রয়েড অ্যাপে বাছাই করা যায়।'); return; }
+  const key = 'rt' + Date.now();
+  ringState[w].pending = key;
+  Android.pickRingtone(key);
+}
+function clearRoutineRing(w){
+  dropUnsavedRing(w);
+  ringState[w].key = ''; ringState[w].name = '';
+  refreshRingUI(w);
+}
+window.onRingtonePicked = function(key, ok, name){
+  if(key === 'default'){
+    if(ok){
+      data.ringtoneName = name || 'নিজস্ব রিংটোন';
+      save();
+      const t = $('ringtoneStatusText');
+      if(t) t.textContent = '✓ ডিফল্ট রিংটোন: ' + data.ringtoneName;
+    }
+    return;
+  }
+  ['add','edit','sub'].forEach(w => {
+    const st = ringState[w];
+    if(st.pending === key){
+      st.pending = '';
+      if(ok){
+        dropUnsavedRing(w);
+        st.key = key; st.name = name || 'নিজস্ব রিংটোন';
+        refreshRingUI(w);
+      }
+    }
+  });
+};
+function refreshOverlayUI(){
+  const b = $('overlayBtn'), t = $('overlayStatusText');
+  if(!b || typeof Android === 'undefined' || typeof Android.overlayGranted !== 'function') return;
+  const ok = Android.overlayGranted();
+  b.style.display = ok ? 'none' : '';
+  if(t) { t.textContent = ok ? '✓ ভাসমান টাইমার পারমিশন দেওয়া আছে' : '⚠ পারমিশন নেই — ভাসমান টাইমার দেখা যাবে না'; t.style.color = ok ? 'var(--primary)' : 'var(--danger)'; }
+}
+document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible') refreshOverlayUI(); });
+function setDefaultVibrate(on){
+  data.defaultVibrate = !!on;
+  save();
+  syncAlarmsWithAndroid();
+}
+
+function openRingtoneSettingsModal() {
+  $('ringtoneSettingsModal').classList.add('active');
+  try { alarmCfgPaint(); } catch(e) {}
+  if($('defaultVibrateCheck')) $('defaultVibrateCheck').checked = !!data.defaultVibrate;
+  refreshOverlayUI();
+  if(isNativeApp() && Android.hasRingtone && Android.hasRingtone('default')) {
+    $('ringtoneStatusText').textContent = "✓ ডিফল্ট রিংটোন: " + (data.ringtoneName || "নিজস্ব রিংটোন");
+  } else if(data.ringtone === "INDEXED_DB") {
+    $('ringtoneStatusText').textContent = "✓ কাস্টম রিংটোন সেট করা আছে।";
+  } else {
+    $('ringtoneStatusText').textContent = "";
+  }
+}
+
+function closeRingtoneSettingsModal() {
+  $('ringtoneSettingsModal').classList.remove('active');
+}
+
+function openRoutineModal(){
+  ringState.add = {key:'', name:'', orig:'', pending:''};
+  if($('addVibrate')) $('addVibrate').value = '';
+  refreshRingUI('add');
+  setSelectedDays('routineDaysContainer', ["0","1","2","3","4","5","6"]);
+  $('routineModal').classList.add('active');
+}
+
+function closeRoutineModal(){
+  dropUnsavedRing('add');
+  ringState.add = {key:'', name:'', orig:'', pending:''};
+  $('routineModal').classList.remove('active');
+}
+
+function addRoutine(){
+  let timeVal = $('routineTime').value;
+  let taskVal = $('routineTask').value.trim();
+  let daysVal = getSelectedDays('routineDaysContainer');
+  
+  if(!timeVal || !taskVal){
+    showCustomAlert('Please fill both time and task description!');
+    return;
+  }
+  if(daysVal.length === 0){
+    showCustomAlert('সাজিদ কমপক্ষে একটি দিন নির্বাচন করো!');
+    return;
+  }
+  
+  if(!Array.isArray(data.routines)) data.routines = [];
+  data.routines.push({time: timeVal, task: taskVal, days: daysVal, done: false, subRoutines: [],
+    ringId: ringState.add.key, ringName: ringState.add.name, vibrate: ($('addVibrate') ? $('addVibrate').value : '')});
+  ringState.add.orig = ringState.add.key;
+  data.routines.sort((a, b) => a.time.localeCompare(b.time));
+  $('routineTime').value = '';$('routineTask').value = '';
+  save();
+  syncAlarmsWithAndroid();
+  closeRoutineModal();
+}
+
+function openEditRoutineModal(i){
+  $('editRoutineIndex').value = i;
+  $('editRoutineTime').value = data.routines[i].time;
+  $('editRoutineTask').value = data.routines[i].task;
+  setSelectedDays('editRoutineDaysContainer', data.routines[i].days || ["0","1","2","3","4","5","6"]);
+  const rr = data.routines[i];
+  ringState.edit = {key: rr.ringId || '', name: rr.ringName || '', orig: rr.ringId || '', pending: ''};
+  if($('editVibrate')) $('editVibrate').value = (rr.vibrate === 'on' || rr.vibrate === true) ? 'on' : (rr.vibrate === 'off' ? 'off' : '');
+  refreshRingUI('edit');
+  $('editRoutineModal').classList.add('active');
+}
+
+function closeEditRoutineModal(){
+  dropUnsavedRing('edit');
+  ringState.edit = {key:'', name:'', orig:'', pending:''};
+  $('editRoutineModal').classList.remove('active');
+}
+
+function saveEditedRoutine(){
+  let i = $('editRoutineIndex').value;
+  let timeVal = $('editRoutineTime').value;
+  let taskVal = $('editRoutineTask').value.trim();
+  let daysVal = getSelectedDays('editRoutineDaysContainer');
+
+  if(!timeVal || !taskVal){
+    showCustomAlert('সাজিদ দয়া করে উভয় ফিল্ড পূরণ করো !');
+    return;
+  }
+  if(daysVal.length === 0){
+    showCustomAlert('সাজিদ কমপক্ষে একটি দিন নির্বাচন করো!');
+    return;
+  }
+
+  data.routines[i].time = timeVal;
+  data.routines[i].task = taskVal;
+  data.routines[i].days = daysVal;
+  if(ringState.edit.orig && ringState.edit.orig !== ringState.edit.key){ try{ Android.deleteRingtone(ringState.edit.orig); }catch(e){} }
+  data.routines[i].ringId = ringState.edit.key;
+  data.routines[i].ringName = ringState.edit.name;
+  data.routines[i].vibrate = ($('editVibrate') ? $('editVibrate').value : '');
+  ringState.edit.orig = ringState.edit.key;
+  data.routines.sort((a, b) => a.time.localeCompare(b.time));
+  save();
+  syncAlarmsWithAndroid();
+  closeEditRoutineModal();
+}
+
+let editingSubRoutineIndex = -1;
+
+function openSubRoutineModal(parentIdx){
+  activeSubRoutineParentIdx = parentIdx;
+  editingSubRoutineIndex = -1;
+  let parentRoutine = data.routines[parentIdx];
+  $('subRoutineModalTitle').textContent = `📋 Sub-routine (${parentRoutine.task})`;
+  $('subRoutineTime').value = '';
+  $('subRoutineTask').value = '';
+  $('subRoutineSubmitBtn').textContent = '+ Add Sub-item';
+  ringState.sub = {key:'', name:'', orig:'', pending:''};
+  if($('subVibrate')) $('subVibrate').value = '';
+  refreshRingUI('sub');
+  setSelectedDays('subRoutineDaysContainer', ["0","1","2","3","4","5","6"]);
+  renderSubRoutines();
+  $('subRoutineModal').classList.add('active');
+}
+
+function closeSubRoutineModal(){
+  dropUnsavedRing('sub');
+  ringState.sub = {key:'', name:'', orig:'', pending:''};
+  $('subRoutineModal').classList.remove('active');
+  activeSubRoutineParentIdx = -1;
+  editingSubRoutineIndex = -1;
+}
+
+let activeSubRoutineParentIdx = -1;
+
+function addSubRoutine(){
+  if(activeSubRoutineParentIdx < 0) return;
+  let timeVal = $('subRoutineTime').value;
+  let taskVal = $('subRoutineTask').value.trim();
+  let daysVal = getSelectedDays('subRoutineDaysContainer');
+
+  if(!timeVal || !taskVal){
+    showCustomAlert('দয়া করে সময় এবং বিবরণ দুটোই লেখো!');
+    return;
+  }
+  if(daysVal.length === 0){
+    showCustomAlert('সাজিদ কমপক্ষে একটি দিন নির্বাচন করো!');
+    return;
+  }
+  if(!Array.isArray(data.routines[activeSubRoutineParentIdx].subRoutines)){
+    data.routines[activeSubRoutineParentIdx].subRoutines = [];
+  }
+  if(editingSubRoutineIndex >= 0) {
+    let sub = data.routines[activeSubRoutineParentIdx].subRoutines[editingSubRoutineIndex];
+    sub.time = timeVal;
+    sub.task = taskVal;
+    sub.days = daysVal;
+    if(ringState.sub.orig && ringState.sub.orig !== ringState.sub.key){ try{ Android.deleteRingtone(ringState.sub.orig); }catch(e){} }
+    sub.ringId = ringState.sub.key; sub.ringName = ringState.sub.name; sub.vibrate = ($('subVibrate') ? $('subVibrate').value : '');
+    editingSubRoutineIndex = -1;
+    $('subRoutineSubmitBtn').textContent = '+ Add Sub-item';
+  } else {
+    data.routines[activeSubRoutineParentIdx].subRoutines.push({time: timeVal, task: taskVal, days: daysVal, done: false,
+      ringId: ringState.sub.key, ringName: ringState.sub.name, vibrate: ($('subVibrate') ? $('subVibrate').value : '')});
+  }  data.routines[activeSubRoutineParentIdx].subRoutines.sort((a,b)=>a.time.localeCompare(b.time));
+  ringState.sub = {key:'', name:'', orig:'', pending:''};
+  if($('subVibrate')) $('subVibrate').value = '';
+  refreshRingUI('sub');
+  
+  $('subRoutineTime').value = '';$('subRoutineTask').value = '';
+  save();
+  syncAlarmsWithAndroid();
+  renderSubRoutines();
+}
+
+function editSubRoutine(subIdx) {
+  if(activeSubRoutineParentIdx < 0) return;
+  let sub = data.routines[activeSubRoutineParentIdx].subRoutines[subIdx];
+  editingSubRoutineIndex = subIdx;
+  $('subRoutineTime').value = sub.time;
+  $('subRoutineTask').value = sub.task;
+  setSelectedDays('subRoutineDaysContainer', sub.days || ["0","1","2","3","4","5","6"]);
+  $('subRoutineSubmitBtn').textContent = 'Save Changes';
+  ringState.sub = {key: sub.ringId || '', name: sub.ringName || '', orig: sub.ringId || '', pending: ''};
+  if($('subVibrate')) $('subVibrate').value = (sub.vibrate === true ? 'on' : (sub.vibrate || ''));
+  refreshRingUI('sub');
+}
+
+function toggleSubRoutineDone(subIdx) {
+  if(activeSubRoutineParentIdx < 0) return;
+  let sub = data.routines[activeSubRoutineParentIdx].subRoutines[subIdx];
+  sub.done = !sub.done;
+  save();
+  renderSubRoutines();
+}
+
+function delSubRoutine(subIdx){
+  showCustomInputModal('সাব-রুটিনটি মুছে ফেলা হচ্ছে...?', 'confirm', '', (isOk) => {
+    if(isOk) {
+      if(activeSubRoutineParentIdx < 0) return;
+      try{ const _s = data.routines[activeSubRoutineParentIdx].subRoutines[subIdx]; if(_s && _s.ringId) Android.deleteRingtone(_s.ringId); }catch(e){}
+      data.routines[activeSubRoutineParentIdx].subRoutines.splice(subIdx, 1);
+      save();
+      syncAlarmsWithAndroid();
+      renderSubRoutines();
+    }
+  });
+}
+
+function renderSubRoutines(){
+  if(activeSubRoutineParentIdx < 0) return;
+  let list = data.routines[activeSubRoutineParentIdx].subRoutines || [];
+  let tbody = $('subRoutineTable');
+
+  if(list.length === 0){
+    tbody.innerHTML = `<tr><td colspan="3" class="muted">কোনো সাব-রুটিন যুক্ত করা হয়নি।</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = list.map((sub, idx) => `
+    <tr class="${sub.done ? 'done-routine' : ''}">
+      <td><b style="font-weight:800;">${esc(sub.time)}</b></td>
+      <td>
+        <div style="${sub.done ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${esc(sub.task)}</div>
+        <div class="muted" style="font-size:10px;"> ${formatDaysDisplay(sub.days)}</div>
+      </td>
+      <td>
+        <div style="display:flex; gap:3px; align-items:center;">
+          <input type="checkbox" ${sub.done ? 'checked' : ''} onchange="toggleSubRoutineDone(${idx})" style="width:15px; height:15px; cursor:pointer;">
+          <button class="btn sm secondary" onclick="editSubRoutine(${idx})" style="padding:2px 5px; font-size:10px;">✏️</button>
+          <button class="btn danger sm" onclick="delSubRoutine(${idx})" style="padding:2px 5px; font-size:10px;">✕</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function delRoutine(i){
+  showCustomInputModal('রুটিনটি মুছে ফেলা হচ্ছে...?', 'confirm', '', (isOk) => {
+    if(isOk) {
+      try{ if(data.routines[i] && data.routines[i].ringId) Android.deleteRingtone(data.routines[i].ringId); }catch(e){}
+      try{ ((data.routines[i] && data.routines[i].subRoutines) || []).forEach(function(s2){ if(s2.ringId) Android.deleteRingtone(s2.ringId); }); }catch(e){}
+      data.routines.splice(i, 1);
+      save();
+      syncAlarmsWithAndroid();
+    }
+  });
+}
+
+function toggleRoutineDone(i) {
+  if(!Array.isArray(data.routines)) return;
+  data.routines[i].done = !data.routines[i].done;
+  save();
+}
+function renderRoutines(){
+  if(!Array.isArray(data.routines)) data.routines = [];
+  $('routineTable').innerHTML = data.routines.length ? data.routines.map((r, i) => {
+    let subList = r.subRoutines || [];
+    let subTotal = subList.length;
+    let subDone = subList.filter(s => s.done).length;
+    let subStatusText = subTotal > 0 ? `<span style="font-size:11px; color:var(--muted); font-weight:800;">(${subTotal}/${subDone})</span>` : '';
+
+    return `
+    <tr class="${r.done ? 'done-routine' : ''}">
+      <td><b style="font-weight:800;">${esc(r.time)}</b></td>
+      <td>
+        <div style="${r.done ? 'text-decoration: line-through; opacity: 0.6;' : ''}">
+          <b style="font-weight:800;">${esc(r.task)}</b> ${subStatusText}
+        </div>
+        <div class="muted" style="font-size:11px;"> ${formatDaysDisplay(r.days)}</div>
+      </td>
+      <td>
+        <div style="display:flex; gap:4px; flex-wrap:nowrap; justify-content:flex-end; align-items:center;">
+          <input type="checkbox" ${r.done ? 'checked' : ''} onchange="toggleRoutineDone(${i})" style="width: 16px; height: 16px; cursor: pointer; margin-right: 2px;">
+          <button class="btn sm secondary" onclick="openSubRoutineModal(${i})">+</button>
+          <button class="btn sm secondary" onclick="openEditRoutineModal(${i})">✏️ </button>
+          <button class="btn danger sm" onclick="delRoutine(${i})">✕</button>
+        </div>
+      </td>
+    </tr>
+  `}).join('') : '<tr><td colspan="3" class="muted">সাজিদ কোনো রুটিন যোগ করা হয়নি !! </td></tr>';
+}
+function toggleNamaz(key){
+  if(!data.namaz) data.namaz = {};
+  data.namaz[key] = !data.namaz[key];
+  save();
+}
+function renderNamaz(){
+  if(!data.namaz) data.namaz = {fajr:false, dhuhr:false, asr:false, maghrib:false, isha:false};
+  $('namazFajr').checked = !!data.namaz.fajr;
+  $('namazDhuhr').checked = !!data.namaz.dhuhr;
+  $('namazAsr').checked = !!data.namaz.asr;
+  $('namazMaghrib').checked = !!data.namaz.maghrib;
+  $('namazIsha').checked = !!data.namaz.isha;
+}
+function addSubject(){
+ let val = $('subjectInput').value.trim();
+ if(!val) return;
+ if(!Array.isArray(data.subjects)) data.subjects = [];
+ if(!data.subjects.some(sub => sub.name === val)){
+    data.subjects.push({ name: val, pinned: false });
+    if(!data.subjectTimes) data.subjectTimes = {};
+    data.subjectTimes[val] = 0;
+    $('subjectInput').value = '';
+    save();
+ } else {
+    showCustomAlert('Subject already exists!');
+ }
+}
+function togglePinSubject(index){
+  if(!Array.isArray(data.subjects)) return;
+  data.subjects[index].pinned = !data.subjects[index].pinned;
+  data.subjects.sort((a, b) => (b.pinned === true) - (a.pinned === true));
+  save();
+}
+function openEditSubjectModal(index){
+  $('editSubjectIndex').value = index;
+  $('editSubjectInput').value = data.subjects[index].name;
+  $('editSubjectModal').classList.add('active');
+}
+function closeEditSubjectModal(){
+  $('editSubjectModal').classList.remove('active');
+}
+function saveEditedSubject(){
+  let index = $('editSubjectIndex').value;
+  let newVal = $('editSubjectInput').value.trim();
+  if(!newVal) {
+    showCustomAlert('দয়া করে সাবজেক্টের নাম লেখো!');
+    return;
+  }
+  let oldVal = data.subjects[index].name;
+  if(newVal !== oldVal && data.subjects.some(sub => sub.name === newVal)){
+    showCustomAlert('এই নামের সাবজেক্ট ইতিমধ্যে রয়েছে!');
+    return;
+  }  
+  data.subjects[index].name = newVal;
+  if(oldVal !== newVal && data.subjectTimes){
+    data.subjectTimes[newVal] = data.subjectTimes[oldVal] || 0;
+    delete data.subjectTimes[oldVal];
+  }
+  save();
+  closeEditSubjectModal();
+}
+function delSubject(index){
+ showCustomInputModal('বিষয়টি মুছে ফেলা হচ্ছে...?', 'confirm', '', (isOk) => {
+   if(isOk) {
+     let subName = data.subjects[index].name;
+     data.subjects.splice(index,1);
+     if(data.subjectTimes && data.subjectTimes[subName] !== undefined){
+       delete data.subjectTimes[subName];
+     }
+     save();
+   }
+ });
+}
+function handleSubjectChange(){
+}
+function renderSubjects(){
+ if(!Array.isArray(data.subjects)) data.subjects = [];
+ let currentSelected = $('subjectSelect') ? $('subjectSelect').value : '';
+ $('subjectList').innerHTML = data.subjects.length ? data.subjects.map((sub, i) => `
+    <div class="subject-item ${sub.pinned ? 'pinned' : ''}">
+      <span><b style="font-weight:800;">${sub.pinned ? '📌 ' : ''}${esc(sub.name)}</b></span>
+      <div style="display:flex; gap:4px;">
+        <button class="btn sm secondary" onclick="togglePinSubject(${i})" style="padding:2px 6px; font-size:11px;" title="Pin/Unpin">${sub.pinned ? 'Unpin' : 'Pin'}</button>
+        <button class="btn sm secondary" onclick="openEditSubjectModal(${i})">✏️ Edit</button>
+        <button class="btn danger sm" onclick="delSubject(${i})">✕</button>
+      </div>
+    </div>
+ `).join('') : '<p class="muted">No subjects added.</p>';
+ $('subjectSelect').innerHTML = data.subjects.length ? data.subjects.map(sub => `<option value="${esc(sub.name)}" ${currentSelected === sub.name ? 'selected' : ''}>${esc(sub.name)}</option>`).join('') : '<option>Add Subjects </option>';
+}
+function renderReport(){
+ if(!Array.isArray(data.subjects)) data.subjects = [];
+ if(!data.subjectTimes) data.subjectTimes = {};
+ $('reportTable').innerHTML = data.subjects.length ? data.subjects.map(s => {
+    let subName = s.name;
+    let subMs = data.subjectTimes[subName] || 0;
+    return `
+      <tr>
+        <td style="font-weight:800;">${esc(subName)}</td>
+        <td style="font-weight:800;">${formatDetailedTimeNoMs(subMs)}</td>
+      </tr>
+    `;
+ }).join('') : '<tr><td colspan="2" class="muted">No data found.</td></tr>';
+}
+function saveProfile(){
+  data.name = $('nameInput').value.trim().toUpperCase() || 'STUDENT';
+  data.timerInstruction = $('timerInstructionInput').value.trim();
+  data.heroInstruction = $('heroInstructionInput').value.trim();
+  const isFirst = data.isFirstLogin;
+  data.isFirstLogin = false; 
+  save();
+  showCustomAlert('Profile Updated Successfully !');
+  
+  if(isFirst){
+    showPage('Dashboard', null);
+  } else {
+    showPage('profile', null);
+  }
+}
+function esc(s){return s ? String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'} [c])) : ''}
+function updateDateTimeBanner(){
+  const now = new Date(); 
+  const daysBn = ["রবিবার", "সোমবার", "মঙ্গলবার", "বুধবার", "বৃহস্পতিবার", "শুক্রবার", "শনিবার"];
+  const monthsBn = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
+  const toBnNum = (str) => str.toString().replace(/[0-9]/g, d => "০১২৩৪৫৬৭৮৯"[d]);
+  const dayName = daysBn[now.getDay()];
+  const monthName = monthsBn[now.getMonth()];
+  const dateNum = toBnNum(now.getDate());
+  const yearNum = toBnNum(now.getFullYear());
+  const formattedDate = `${dayName}, ${dateNum} ${monthName}, ${yearNum} /`;
+  const timeOptions = { hour : '2-digit', minute : '2-digit', second  : '2-digit', hour12 : true };
+  const formattedTime = now.toLocaleTimeString('en-US', timeOptions);
+  $('today').textContent = `${formattedDate} ${formattedTime}`;
+  const timerCard = $('mainTimerCard');
+  if (timerCard && timerCard.classList.contains('fullscreen')) {
+    let fsClock = $('fullscreenRealtimeClock');
+    if (fsClock) fsClock.textContent = formattedTime;
+  }
+  try { checkAndResetDailyData(); } catch(e) { console.error(e); }
+  checkRoutineAlarm(now);
+}
+function checkRoutineAlarm(nowTime){
+  let curHours = String(nowTime.getHours()).padStart(2, '0');
+  let curMins = String(nowTime.getMinutes()).padStart(2, '0');
+  let currentTimeStr = `${curHours}:${curMins}`;
+  let currentDayStr = String(nowTime.getDay());
+
+  if(lastTriggeredTime === currentTimeStr) return;  
+  let triggeredTasks = [];
+  if(Array.isArray(data.routines)){
+    for(let r of data.routines){
+      let rDays = r.days || ["0","1","2","3","4","5","6"];
+      if(r.time === currentTimeStr && rDays.includes(currentDayStr)){
+        triggeredTasks.push(r.task);
+      }
+      if(Array.isArray(r.subRoutines)){
+        for(let sr of r.subRoutines){
+          let srDays = sr.days || rDays;
+          if(sr.time === currentTimeStr && srDays.includes(currentDayStr)){
+            triggeredTasks.push(`${r.task} - ${sr.task}`);
+          }
+        }
+      }
+    }
+  }
+  if(triggeredTasks.length > 0){
+    triggerAlarm(triggeredTasks);
+    lastTriggeredTime = currentTimeStr;
+  }
+}
+let alarmTimeout;
+const IS_NATIVE = (typeof Android !== "undefined" && typeof Android.syncAlarms === "function");
+async function triggerAlarm(tasks){
+  let audio = $('alarmAudio');
+  if(IS_NATIVE){
+    try { if (typeof Android.alarmNow === "function") Android.alarmNow(Array.isArray(tasks) ? tasks.join("\n") : String(tasks)); } catch(e) {}
+    return;
+  } else if(data.ringtone === "INDEXED_DB"){
+    let savedAudio = await getRingtoneDB("custom_ringtone");
+    if(savedAudio) audio.src = savedAudio;
+    else audio.src = "https://actions.google.com/sounds/v1/alarms/beep_short.ogg";
+  } else if(data.ringtone){
+    audio.src = data.ringtone;
+  } else {
+    audio.src = "https://actions.google.com/sounds/v1/alarms/beep_short.ogg";
+  }
+  if(!IS_NATIVE) audio.play().catch(e=>console.log(e));    
+  let taskListContainer = $('alarmTaskList');
+  if(Array.isArray(tasks)) {
+    taskListContainer.innerHTML = tasks.map((t) => `
+      <div style="padding: 4px 0; border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 700; color: var(--text); text-align: center;">
+        ${esc(t)}
+      </div>
+    `).join('');
+  } else {
+    taskListContainer.innerHTML = `<div style="font-size: 14px; font-weight: 700; color: var(--text); text-align: center;">${esc(tasks)}</div>`;
+  }
+  if (!IS_NATIVE && 'Notification' in window && Notification.permission === 'granted') {
+    let notificationText = Array.isArray(tasks) ? tasks.join(', ') : tasks;
+    new Notification(" রুটিন রিমাইন্ডার!", { body: ` ${notificationText}` });
+  }
+  $('alarmModal').classList.add('active');
+  clearTimeout(alarmTimeout);
+  alarmTimeout = setTimeout(() => {
+    stopAlarm();
+  }, 60000); 
+}
+function stopAlarm() {
+  try { if (IS_NATIVE && typeof Android.stopAlarm === "function") Android.stopAlarm(); } catch(e) {}
+  $('alarmModal').classList.remove('active');
+  let audio = $('alarmAudio');
+  audio.pause();
+  audio.currentTime = 0;
+  clearTimeout(alarmTimeout);
+}
+let currentHistoryModalType = 'study';
+function openHistoryModal(type){
+  currentHistoryModalType = type;
+  $('historyModal').classList.add('active');
+  const titleEl = $('historyModalTitle');
+  const colNameEl = $('historyTableColName');
+  const tbodyEl = $('historyTableBody');  
+  if(!data.history) data.history = {};  
+  let historyMap = {...data.history};
+  const todayKey = getActiveCycleDate();
+  historyMap[todayKey] = {
+    studySeconds: Math.floor((data.secondsMs || 0) / 1000),
+    screenSeconds: Math.floor((data.screenMs || 0) / 1000),
+    namazCount: Object.values(data.namaz || {}).filter(Boolean).length,
+    subjectTimes: {...data.subjectTimes}
+  };
+  let keys = Object.keys(historyMap).sort().reverse();
+  if(type === 'study'){
+    titleEl.textContent = 'Study History';
+    colNameEl.textContent = 'Study Time & Subjects';
+    tbodyEl.innerHTML = keys.length ? keys.map(k => {
+      let entry = historyMap[k];
+      let totalStr = formatDetailedTimeNoMs((entry.studySeconds || 0) * 1000);
+      let subDetails = '';
+      if(entry.subjectTimes && typeof entry.subjectTimes === 'object') {
+        let subItems = Object.entries(entry.subjectTimes).filter(([s, ms]) => ms > 0);
+        if(subItems.length > 0) {
+          subDetails = ` <span style="font-size:12px; color:var(--muted); font-weight:normal;">(` +
+            subItems.map(([subName, ms]) => `${esc(subName)}: ${formatDetailedTimeNoMs(ms)}`).join(', ') +
+            `)</span>`;
+        }
+      }
+      let formattedDate = formatDateDDMMYY(k);
+      return `
+        <tr>
+          <td><b style="font-weight:800;">${formattedDate}</b></td>
+          <td>
+            <span style="font-weight:800; color:var(--primary);">${totalStr}</span>
+            ${subDetails}
+          </td>
+        </tr>
+      `;
+    }).join('') : '<tr><td colspan="2" class="muted">No history found.</td></tr>';
+  } else if(type === 'screen'){
+    titleEl.textContent = 'Screen Time History';
+    colNameEl.textContent = 'Screen Time';
+    tbodyEl.innerHTML = keys.length ? keys.map(k => {
+      let formattedDate = formatDateDDMMYY(k);
+      return `
+        <tr>
+          <td><b style="font-weight:800;">${formattedDate}</b></td>
+          <td style="font-weight:800;">${formatDetailedTimeNoMs((historyMap[k].screenSeconds || 0) * 1000)}</td>
+        </tr>
+      `;
+    }).join('') : '<tr><td colspan="2" class="muted">No history found.</td></tr>';
+  } else if(type === 'namaz'){
+    titleEl.textContent = 'Namaz History';
+    colNameEl.textContent = 'Completed';
+    tbodyEl.innerHTML = keys.length ? keys.map(k => {
+      let formattedDate = formatDateDDMMYY(k);
+      return `
+        <tr>
+          <td><b style="font-weight:800;">${formattedDate}</b></td>
+          <td> 5 / ${historyMap[k].namazCount || 0} ওয়াক্ত </td>
+        </tr>
+      `;
+    }).join('') : '<tr><td colspan="2" class="muted">No history found.</td></tr>';
+  }
+}
+function confirmReset10DaysHistory() {
+  const type = currentHistoryModalType;
+  const typeName = type === 'study' ? 'পড়াশোনা ও সাবজেক্ট' : (type === 'screen' ? 'স্ক্রিনটাইম' : 'নামাজ');
+  showCustomInputModal('কত দিনের ' + typeName + ' হিস্ট্রি রিসেট করবে? (আজকের দিনসহ)', 'prompt', '1', (isOk, val) => {
+    if(!isOk) return;
+    const raw = String(val || '').trim().replace(/[০-৯]/g, d => '০১২৩৪৫৬৭৮৯'.indexOf(d));
+    const days = parseInt(raw, 10);
+    if(!/^\d+$/.test(raw) || isNaN(days) || days < 1 || days > 365) {
+      showCustomInputModal(' সঠিক সংখ্যা দাও।', 'alert');
+      return;
+    }
+    showCustomInputModal('আজকের দিনসহ গত ' + days + ' দিনের ' + typeName + ' হিস্ট্রি রিসেট করা হচ্ছে...', 'confirm', '', (ok) => {
+      if(!ok) return;
+      const todayKey = getActiveCycleDate();
+      const [ty, tm, td] = todayKey.split('-').map(Number);
+      const keysToReset = [];
+      for(let i = 0; i < days; i++) {
+        const dt = new Date(ty, tm - 1, td - i);
+        keysToReset.push(dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0'));
+      }
+      if(type === 'study') {
+        data.secondsMs = 0;
+        data.sessions = 0;
+        if(data.subjectTimes) Object.keys(data.subjectTimes).forEach(k => data.subjectTimes[k] = 0);
+        tabStopwatchMs = 0;
+      } else if(type === 'screen') {
+        data.screenMs = 0;
+        topStopwatchMs = 0;
+      } else if(type === 'namaz') {
+        data.namaz = {fajr:false, dhuhr:false, asr:false, maghrib:false, isha:false};
+      }
+      if(!data.history) data.history = {};
+      keysToReset.forEach(hKey => {
+        const h = data.history[hKey];
+        if(!h) return;
+        if(type === 'study') {
+          h.studySeconds = 0;
+          if(h.subjectTimes) Object.keys(h.subjectTimes).forEach(sk => h.subjectTimes[sk] = 0);
+        } else if(type === 'screen') {
+          h.screenSeconds = 0;
+        } else if(type === 'namaz') {
+          h.namazCount = 0;
+        }
+      });
+      save();
+      openHistoryModal(type);
+    });
+  });
+}
+function closeHistoryModal(){
+  $('historyModal').classList.remove('active');
+}
+function openBrowserHome(){ try{ Android.openBrowser(); }catch(e){ window.open('https://www.google.com/','_blank'); } }
+let _lastTimerPush = 0, _lastTimerMode = 'x', _lastTimerKind = '';
+function pushTimerState(){
+  try{
+    if (typeof Android === 'undefined' || typeof Android.timerInfo !== 'function') return;
+    let kind = '', running = false, mode = '', ms = 0;
+    if (isStudyRunning) { kind = 'study'; running = true; mode = 'down'; ms = Math.max(0, remainingMs); }
+    else if (isTodoStopwatchRunning) { kind = 'todo'; running = true; mode = 'up'; ms = tabStopwatchMs; }
+    else if (isTopStopwatchRunning) { kind = 'screen'; running = true; mode = 'up'; ms = topStopwatchMs; }
+    else if (_lastTimerKind === 'study' && remainingMs > 0) { kind = 'study'; mode = 'down'; ms = remainingMs; }
+    else if (_lastTimerKind === 'todo' && tabStopwatchMs > 0) { kind = 'todo'; mode = 'up'; ms = tabStopwatchMs; }
+    else if (_lastTimerKind === 'screen' && topStopwatchMs > 0) { kind = 'screen'; mode = 'up'; ms = topStopwatchMs; }
+    if (running) _lastTimerKind = kind;
+    const now = Date.now();
+    const key = kind + ':' + running;
+    if (key !== _lastTimerMode || now - _lastTimerPush >= 1000) {
+      _lastTimerMode = key; _lastTimerPush = now;
+      Android.timerInfo(kind, running, mode, Math.floor(ms));
+    }
+  }catch(e){}
+}
+window.nativeTimerCatchUp = function(){
+  try{ restoreRunningTimers(); saveRunningStateImmediately(); pushTimerState(); }catch(e){}
+};
+window.nativeTimerCmd = function(cmd, kind){
+  try{
+    restoreRunningTimers(); saveRunningStateImmediately();
+    if(cmd === 'toggle'){
+      if(kind === 'study') toggleStudy();
+      else if(kind === 'todo') toggleTodoStopwatch();
+      else if(kind === 'screen') toggleTopStopwatch();
+    } else if(cmd === 'reset'){
+      if(kind === 'study') resetStudy();
+      else if(kind === 'todo') resetTodoStopwatch();
+      else if(kind === 'screen') resetTopStopwatch();
+      _lastTimerKind = '';
+    }
+    save(); _lastTimerMode = 'x'; pushTimerState();
+  }catch(e){}
+};
+setInterval(() => {
+  const now = Date.now();
+  const delta = now - lastTickTime;
+  lastTickTime = now;
+  if (delta > 0 && delta < 5000) { 
+    if (isStudyRunning) updateStudyTick(delta);
+    if (isTopStopwatchRunning) updateTopStopwatchTick(delta);
+    if (isTodoStopwatchRunning) updateTodoStopwatchTick(delta);
+  }
+  pushTimerState();
+}, 100);
+
+
+setInterval(updateDateTimeBanner, 1000);
+updateDateTimeBanner();
+checkAuthStatus();
+if (typeof Android !== "undefined" && typeof Android.pickRingtone === "function") { var sb2 = document.getElementById("nativeStatusBtn"); if (sb2) sb2.style.display = ""; }
+
+// ===== চাকা-টাইপ সময় বাছাই (ঘণ্টা / মিনিট / AM-PM) =====
+var wheelTarget = null, wheelCols = null;
+function wheelCol(items, sel){
+  var col = document.createElement('div'); col.className = 'wheelCol';
+  items.forEach(function(t){ var d = document.createElement('div'); d.className = 'wheelItem'; d.textContent = t; col.appendChild(d); });
+  function mark(i){ [].forEach.call(col.children, function(c, k){ c.classList.toggle('on', k === i); }); }
+  col.getIdx = function(){ return Math.max(0, Math.min(items.length - 1, Math.round(col.scrollTop / 48))); };
+  col.addEventListener('scroll', function(){ mark(col.getIdx()); });
+  mark(sel);
+  col.setSel = function(i){ col.scrollTop = i * 48; mark(i); };
+  return col;
+}
+function openWheelTime(el){
+  wheelTarget = el;
+  var v = (el.value || '07:00').split(':'), h24 = parseInt(v[0], 10) || 0, mi = parseInt(v[1], 10) || 0;
+  var hrs = [], mins = [];
+  for (var h = 1; h <= 12; h++) hrs.push(('0' + h).slice(-2));
+  for (var m = 0; m < 60; m++) mins.push(('0' + m).slice(-2));
+  var hc = wheelCol(hrs, (h24 % 12 || 12) - 1), mc = wheelCol(mins, mi), ac = wheelCol(['AM', 'PM'], h24 >= 12 ? 1 : 0);
+  wheelCols = [hc, mc, ac];
+  var w = $('wheelWrap'); w.innerHTML = '';
+  var band = document.createElement('div'); band.className = 'wheelBand'; w.appendChild(band);
+  w.appendChild(hc); w.appendChild(mc); w.appendChild(ac);
+  $('wheelOv').classList.add('active');
+  setTimeout(function(){ hc.setSel((h24 % 12 || 12) - 1); mc.setSel(mi); ac.setSel(h24 >= 12 ? 1 : 0); }, 30);
+}
+function wheelClose(){ $('wheelOv').classList.remove('active'); wheelTarget = null; }
+function wheelOk(){
+  if (wheelTarget && wheelCols) {
+    var h12 = wheelCols[0].getIdx() + 1, mi = wheelCols[1].getIdx(), pm = wheelCols[2].getIdx() === 1;
+    var h24 = (h12 % 12) + (pm ? 12 : 0);
+    wheelTarget.value = ('0' + h24).slice(-2) + ':' + ('0' + mi).slice(-2);
+    wheelTarget.dispatchEvent(new Event('input', {bubbles: true}));
+    wheelTarget.dispatchEvent(new Event('change', {bubbles: true}));
+  }
+  wheelClose();
+}
+// ===== Ring duration / Snooze duration (সেটিং অ্যান্ড্রয়েডে সেভ হয়) =====
+var ALARM_RING_OPTS = [1, 2, 5, 10, 15, 20, 30], ALARM_CNT_OPTS = [0, 1, 3, 5, 10];
+function alarmCfgGet(){
+  try { var a = String(Android.alarmCfg()).split(','); return {ring: +a[0] || 2, sn: +a[1] || 5, cnt: isNaN(+a[2]) ? 3 : +a[2]}; }
+  catch(e) { return {ring: 2, sn: 5, cnt: 3}; }
+}
+function alarmCfgSave(c){ try { Android.setAlarmCfg(c.ring, c.sn, c.cnt); } catch(e) {} alarmCfgPaint(); }
+function alarmCfgPaint(){
+  var b = $('alarmCfgBox'); if (!b) return;
+  var ok = (typeof Android !== 'undefined' && typeof Android.alarmCfg === 'function');
+  b.style.display = ok ? '' : 'none'; if (!ok) return;
+  var c = alarmCfgGet();
+  $('ringDurVal').textContent = c.ring + (c.ring === 1 ? ' minute' : ' minutes');
+  $('snoozeVal').textContent = c.sn + ' minutes, ' + c.cnt + 'x';
+}
+function cfgCancelBtn(ovId){
+  var b = document.createElement('button'); b.className = 'btn sm secondary'; b.textContent = 'Cancel'; b.style.marginTop = '10px';
+  b.onclick = function(){ $(ovId).classList.remove('active'); }; return b;
+}
+function openRingDur(){
+  var c = alarmCfgGet(), box = $('ringDurBox');
+  box.innerHTML = '<h3 style="margin:0 0 6px;font-size:16px;">Ring duration</h3>';
+  ALARM_RING_OPTS.forEach(function(m){
+    var r = document.createElement('div'); r.className = 'cfgRow';
+    r.innerHTML = '<span>' + m + (m === 1 ? ' minute' : ' minutes') + '</span><span class="radioDot' + (m === c.ring ? ' on' : '') + '"></span>';
+    r.onclick = function(){ c.ring = m; alarmCfgSave(c); $('ringDurOv').classList.remove('active'); };
+    box.appendChild(r);
+  });
+  box.appendChild(cfgCancelBtn('ringDurOv'));
+  $('ringDurOv').classList.add('active');
+}
+function openSnoozeCfg(){
+  var c = alarmCfgGet(), box = $('snoozeCfgBox');
+  var ci = ALARM_CNT_OPTS.indexOf(c.cnt); if (ci < 0) ci = 2;
+  var sn = Math.max(5, Math.min(30, Math.round(c.sn / 5) * 5));
+  box.innerHTML = '<h3 style="margin:0 0 10px;font-size:16px;">Snooze duration</h3>' +
+    '<div style="font-size:13px;color:var(--muted)">Snooze duration (min)</div>' +
+    '<input type="range" class="cfgRange" id="snDur" min="5" max="30" step="5" value="' + sn + '">' +
+    '<div class="cfgTicks"><span>5</span><span>10</span><span>15</span><span>20</span><span>25</span><span>30</span></div>' +
+    '<div style="font-size:13px;color:var(--muted)">Number of snoozes</div>' +
+    '<input type="range" class="cfgRange" id="snCnt" min="0" max="4" step="1" value="' + ci + '">' +
+    '<div class="cfgTicks"><span>0</span><span>1</span><span>3</span><span>5</span><span>10</span></div>' +
+    '<div style="display:flex;gap:8px;"></div>';
+  var row = box.lastChild;
+  var cancel = cfgCancelBtn('snoozeCfgOv'); cancel.style.marginTop = '0'; cancel.style.flex = '1';
+  var ok = document.createElement('button'); ok.className = 'btn sm'; ok.textContent = 'OK'; ok.style.flex = '1';
+  ok.onclick = function(){
+    c.sn = parseInt($('snDur').value, 10); c.cnt = ALARM_CNT_OPTS[parseInt($('snCnt').value, 10)];
+    alarmCfgSave(c); $('snoozeCfgOv').classList.remove('active');
+  };
+  row.appendChild(cancel); row.appendChild(ok);
+  $('snoozeCfgOv').classList.add('active');
+}
+alarmCfgPaint();
+syncAlarmsWithAndroid();
+</script>
+</body>
+</html>

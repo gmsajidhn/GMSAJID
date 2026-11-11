@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="PremiumDialog" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/premium_dialog_bg</item>
+        <item name="android:textColorPrimary">#F3F4FF</item>
+        <item name="android:textColorSecondary">#C9CEFF</item>
+        <item name="android:textColor">#F3F4FF</item>
+        <item name="android:textColorAlertDialogListItem">#F3F4FF</item>
+        <item name="colorAccent">#F6C85F</item>
+        <item name="android:colorAccent">#F6C85F</item>
+        <item name="buttonBarButtonStyle">@style/PremiumBtn</item>
+        <item name="android:buttonBarButtonStyle">@style/PremiumBtn</item>
+        <item name="android:windowMinWidthMajor">80%</item>
+        <item name="android:windowMinWidthMinor">88%</item>
+    </style>
+    <style name="PremiumBtn" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">#F6C85F</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="PremiumDialogLight" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/premium_dialog_bg_light</item>
+        <item name="android:textColorPrimary">#14183A</item>
+        <item name="android:textColorSecondary">#3A4070</item>
+        <item name="android:textColor">#14183A</item>
+        <item name="android:textColorAlertDialogListItem">#14183A</item>
+        <item name="colorAccent">#9A6A00</item>
+        <item name="android:colorAccent">#9A6A00</item>
+        <item name="buttonBarButtonStyle">@style/PremiumBtnLight</item>
+        <item name="android:buttonBarButtonStyle">@style/PremiumBtnLight</item>
+        <item name="android:windowMinWidthMajor">80%</item>
+        <item name="android:windowMinWidthMinor">88%</item>
+    </style>
+    <style name="PremiumBtnLight" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">#8A5A00</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <!-- ব্রাউজারের WebView-এর থিম: Dark হলে ওয়েবসাইটও ডার্ক হয় -->
+    <style name="WebThemeDark" parent="Theme.AppCompat.NoActionBar" />
+    <style name="WebThemeLight" parent="Theme.AppCompat.Light.NoActionBar" />
+</resources>
